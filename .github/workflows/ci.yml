@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run isolated core checks
+        run: swift run DockModeCoreChecks
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -project DockMode.xcodeproj -scheme DockMode
+
+      - name: Run unit tests
+        run: |
+          xcodebuild test \
+            -project DockMode.xcodeproj \
+            -scheme DockMode \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Build unsigned universal app
+        run: |
+          xcodebuild build \
+            -project DockMode.xcodeproj \
+            -scheme DockMode \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            ARCHS='arm64 x86_64' \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO

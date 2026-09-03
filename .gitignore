@@ -1,0 +1,13 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+build/
+dist/
+*.xcarchive
+*.dmg
+*.zip
+*.appcast.xml
+xcuserdata/
+*.xcuserstate
+Config/Signing.local.xcconfig

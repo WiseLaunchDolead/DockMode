@@ -1,0 +1,179 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-15
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        env:
+          DEVELOPER_ID_P12_BASE64: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
+          DEVELOPER_ID_P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_PROVISIONING_PROFILE_BASE64: ${{ secrets.APP_PROVISIONING_PROFILE_BASE64 }}
+          FOCUS_PROVISIONING_PROFILE_BASE64: ${{ secrets.FOCUS_PROVISIONING_PROFILE_BASE64 }}
+          APP_PROVISIONING_PROFILE_NAME: ${{ secrets.APP_PROVISIONING_PROFILE_NAME }}
+          FOCUS_PROVISIONING_PROFILE_NAME: ${{ secrets.FOCUS_PROVISIONING_PROFILE_NAME }}
+          APP_STORE_CONNECT_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          SPARKLE_PUBLIC_KEY: ${{ secrets.SPARKLE_PUBLIC_KEY }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          required=(
+            DEVELOPER_ID_P12_BASE64 DEVELOPER_ID_P12_PASSWORD APPLE_TEAM_ID
+            APP_PROVISIONING_PROFILE_BASE64 FOCUS_PROVISIONING_PROFILE_BASE64
+            APP_PROVISIONING_PROFILE_NAME FOCUS_PROVISIONING_PROFILE_NAME
+            APP_STORE_CONNECT_KEY_BASE64 APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID
+            SPARKLE_PUBLIC_KEY SPARKLE_PRIVATE_KEY
+          )
+          for name in "${required[@]}"; do
+            if [[ -z "${!name}" ]]; then
+              echo "Missing release secret: $name" >&2
+              exit 1
+            fi
+          done
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Configure signing assets
+        env:
+          CERTIFICATE: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          APP_PROFILE: ${{ secrets.APP_PROVISIONING_PROFILE_BASE64 }}
+          FOCUS_PROFILE: ${{ secrets.FOCUS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/dockmode-signing.keychain-db"
+          KEYCHAIN_PASSWORD=$(uuidgen)
+          echo "$CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/developer-id.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$RUNNER_TEMP/developer-id.p12" -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          echo "$APP_PROFILE" | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/DockMode.provisionprofile"
+          echo "$FOCUS_PROFILE" | base64 --decode > "$HOME/Library/MobileDevice/Provisioning Profiles/DockModeFocus.provisionprofile"
+
+      - name: Generate project and run checks
+        run: |
+          xcodegen generate
+          swift run DockModeCoreChecks
+
+      - name: Archive universal application
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_PROFILE_NAME: ${{ secrets.APP_PROVISIONING_PROFILE_NAME }}
+          FOCUS_PROFILE_NAME: ${{ secrets.FOCUS_PROVISIONING_PROFILE_NAME }}
+          SPARKLE_PUBLIC_KEY: ${{ secrets.SPARKLE_PUBLIC_KEY }}
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          xcodebuild archive \
+            -project DockMode.xcodeproj \
+            -scheme DockMode \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/DockMode.xcarchive" \
+            -destination 'generic/platform=macOS' \
+            ARCHS='arm64 x86_64' \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY='Developer ID Application' \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            DOCKMODE_APP_PROFILE="$APP_PROFILE_NAME" \
+            DOCKMODE_FOCUS_PROFILE="$FOCUS_PROFILE_NAME" \
+            SPARKLE_PUBLIC_KEY="$SPARKLE_PUBLIC_KEY" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER"
+
+      - name: Create and notarize DMG
+        env:
+          NOTARY_KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
+          NOTARY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          APP_PATH="$RUNNER_TEMP/DockMode.xcarchive/Products/Applications/DockMode.app"
+          DMG_PATH="$RUNNER_TEMP/DockMode-$VERSION.dmg"
+          scripts/create-dmg.sh "$APP_PATH" "$DMG_PATH"
+          codesign --force --timestamp --sign 'Developer ID Application' "$DMG_PATH"
+
+          echo "$NOTARY_KEY" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+          xcrun notarytool submit "$DMG_PATH" \
+            --key "$RUNNER_TEMP/AuthKey.p8" \
+            --key-id "$NOTARY_KEY_ID" \
+            --issuer "$NOTARY_ISSUER_ID" \
+            --wait
+          xcrun stapler staple "$DMG_PATH"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          xcrun stapler validate "$DMG_PATH"
+          lipo -archs "$APP_PATH/Contents/MacOS/DockMode" | grep -q arm64
+          lipo -archs "$APP_PATH/Contents/MacOS/DockMode" | grep -q x86_64
+
+      - name: Generate signed Sparkle appcast
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          UPDATE_DIR="$RUNNER_TEMP/updates"
+          mkdir -p "$UPDATE_DIR"
+          cp "$RUNNER_TEMP/DockMode-$VERSION.dmg" "$UPDATE_DIR/"
+          cp RELEASE_NOTES.md "$UPDATE_DIR/DockMode-$VERSION.md"
+
+          GENERATE_APPCAST=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type f -path '*/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast' -print -quit)
+          if [[ -z "$GENERATE_APPCAST" ]]; then
+            echo "Sparkle generate_appcast tool was not found." >&2
+            exit 1
+          fi
+          echo "$SPARKLE_PRIVATE_KEY" | "$GENERATE_APPCAST" \
+            --ed-key-file - \
+            --maximum-versions 1 \
+            --maximum-deltas 0 \
+            --download-url-prefix "https://github.com/Wiselaunch/DockMode/releases/download/$GITHUB_REF_NAME/" \
+            --link "https://github.com/Wiselaunch/DockMode" \
+            "$UPDATE_DIR"
+
+          mkdir -p pages
+          cp "$UPDATE_DIR/appcast.xml" pages/appcast.xml
+          cp docs/index.html pages/index.html
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          gh release create "$GITHUB_REF_NAME" \
+            "$RUNNER_TEMP/DockMode-$VERSION.dmg" \
+            --title "DockMode $VERSION" \
+            --notes-file RELEASE_NOTES.md \
+            --verify-tag
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+      - name: Deploy appcast to GitHub Pages
+        id: pages
+        uses: actions/deploy-pages@v4

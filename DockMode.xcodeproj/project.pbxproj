@@ -1,0 +1,753 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		134A6700EF67AAF6964AE401 /* DockModeFocusExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 35953CE1D92C1248B9B065E4 /* DockModeFocusExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2B4D25946B5E42990427D3B2 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 6C631AD5F483094ADAAFBE23 /* Sparkle */; };
+		525C42422D15F83DEF4C5757 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE48FAD5D51ED1F73FC66498 /* Assets.xcassets */; };
+		549C5155D5FF743365A23717 /* ProfileColor+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3C2D64BE7B2139853D78BC /* ProfileColor+SwiftUI.swift */; };
+		5B43076056D7353901419042 /* DockModeProfileEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81416EAA5B8B7726946472B /* DockModeProfileEntity.swift */; };
+		5F5BBC56CD363F99FB11A0E3 /* ModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D2F2816948E3E7370F4252 /* ModelsTests.swift */; };
+		62EABA5D51677B6F5B409B8B /* DockModeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 445952208508DFE65A66EB62 /* DockModeCore */; };
+		739D04344F75ECB34DE9256B /* ApplicationCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D85C1F716D1A47C48BC9E1 /* ApplicationCatalogTests.swift */; };
+		7EB619BEE9A85D69A37AB38C /* DockRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7C42A887BACE7651B38790 /* DockRepositoryTests.swift */; };
+		8A294677317356DE67FFB020 /* DockModeFocusFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9E49558A4338345A4C3857 /* DockModeFocusFilter.swift */; };
+		8F796BE0BCEA14D575ACB52A /* DiagnosticsExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A41B5F120020BBA0B5D02 /* DiagnosticsExporter.swift */; };
+		938CEA3531CEDE0C8EFB78E2 /* ProfileEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0974E20C3A0C0EF54B3C1BB5 /* ProfileEditorView.swift */; };
+		9570ACCA3E537C468414498A /* DockModeCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3DE52B96DDA91A5E9C6FB164 /* DockModeCore */; };
+		991EBD15393D1E6FA29FD037 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5D1B6DC786FE346BBB7F4C9A /* Localizable.strings */; };
+		99C84D44112F1F380B3F2AB0 /* DockModeCore in Frameworks */ = {isa = PBXBuildFile; productRef = AF9F0AB1B8869F7043E22152 /* DockModeCore */; };
+		9B3AEB451FAE3626451B53EB /* ProfileStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8985FE0AFF47D5FF8B4F6A5C /* ProfileStoreTests.swift */; };
+		A21D6F9ECEA298E379567B53 /* MenuBarContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546A810F6DE970C5C4FBD527 /* MenuBarContentView.swift */; };
+		A37A95F58EEC8F444066094C /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA5F26C6DF7739E1FE03F61 /* AppModel.swift */; };
+		A6845954608F3BB56CE18AF1 /* ProfileManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1BD82932C66DA369B596324 /* ProfileManagementView.swift */; };
+		B94AC974662E6A250571C836 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5A8E180AB22D3D25F41626F3 /* Localizable.strings */; };
+		C1D160D91F58788E9193A1DD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 07CCA0A8AE1C72B40F759AC3 /* PrivacyInfo.xcprivacy */; };
+		C749FC25C0D2039B400BDAC3 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EDF8E9A2A1C6B05D4EF9E4 /* LaunchAtLoginManager.swift */; };
+		D1AE53A7DCD68C39BB235D52 /* DockModeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D21DF19DAE950E8BDA6B761 /* DockModeApp.swift */; };
+		E865EDB641CCA727C5B03F83 /* DockModeFocusExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC7AEE40C19A41F2B946597 /* DockModeFocusExtension.swift */; };
+		F4C8FFB1C727C61A52B66DC0 /* FocusRequestObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276F95A924FC0996A4C5D15D /* FocusRequestObserver.swift */; };
+		FDD2FD0BDC560BC922966734 /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442FEF5F12038D57619F1B7F /* UpdaterController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8A6AE030EEBB3B45B09B786B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BD4CC1E5B155801EAAF49173 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47D2F1120E95B5ED188C2ABC;
+			remoteInfo = DockModeFocusExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4B0A64ACBC00322B72B967B1 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				134A6700EF67AAF6964AE401 /* DockModeFocusExtension.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0031F410096E003E33F12FBE /* DockModeFocusExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DockModeFocusExtension.entitlements; sourceTree = "<group>"; };
+		07CCA0A8AE1C72B40F759AC3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		0974E20C3A0C0EF54B3C1BB5 /* ProfileEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditorView.swift; sourceTree = "<group>"; };
+		0C3F19CAAF2221912E0B13F6 /* DockMode */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DockMode; path = .; sourceTree = SOURCE_ROOT; };
+		0D3566D86C2727B1C0C73366 /* DockMode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DockMode.entitlements; sourceTree = "<group>"; };
+		0F0B05FDE4F17D050677C9CD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		276F95A924FC0996A4C5D15D /* FocusRequestObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusRequestObserver.swift; sourceTree = "<group>"; };
+		2D21DF19DAE950E8BDA6B761 /* DockModeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockModeApp.swift; sourceTree = "<group>"; };
+		35953CE1D92C1248B9B065E4 /* DockModeFocusExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = DockModeFocusExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		38EDF8E9A2A1C6B05D4EF9E4 /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
+		3F84AD29E6DD03D07F970D25 /* DockMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DockMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		41EC2527CED4DD36859E6A14 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		442FEF5F12038D57619F1B7F /* UpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterController.swift; sourceTree = "<group>"; };
+		546A810F6DE970C5C4FBD527 /* MenuBarContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContentView.swift; sourceTree = "<group>"; };
+		6AB312EEE76AA889CFD70CA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6D9E49558A4338345A4C3857 /* DockModeFocusFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockModeFocusFilter.swift; sourceTree = "<group>"; };
+		7C2A41B5F120020BBA0B5D02 /* DiagnosticsExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsExporter.swift; sourceTree = "<group>"; };
+		7DAB89CF41C8FCACE10FFD69 /* DockModeCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DockModeCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8985FE0AFF47D5FF8B4F6A5C /* ProfileStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStoreTests.swift; sourceTree = "<group>"; };
+		8EA5F26C6DF7739E1FE03F61 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		A51BF492855094771CFCB687 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A81416EAA5B8B7726946472B /* DockModeProfileEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockModeProfileEntity.swift; sourceTree = "<group>"; };
+		BDC7AEE40C19A41F2B946597 /* DockModeFocusExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockModeFocusExtension.swift; sourceTree = "<group>"; };
+		C39343C4864E02F10232030E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C9D2F2816948E3E7370F4252 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
+		CB7C42A887BACE7651B38790 /* DockRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockRepositoryTests.swift; sourceTree = "<group>"; };
+		D9D85C1F716D1A47C48BC9E1 /* ApplicationCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCatalogTests.swift; sourceTree = "<group>"; };
+		DE1C594950C6A32387030AD0 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		DE48FAD5D51ED1F73FC66498 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EA3C2D64BE7B2139853D78BC /* ProfileColor+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileColor+SwiftUI.swift"; sourceTree = "<group>"; };
+		ED87B6A00D613F1DA46DF085 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1BD82932C66DA369B596324 /* ProfileManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManagementView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		28A5FFE816D54EF13AF3DD02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99C84D44112F1F380B3F2AB0 /* DockModeCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5ECE404DC56BC3F483EA3D2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9570ACCA3E537C468414498A /* DockModeCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F85858DDA773522E17BC47BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62EABA5D51677B6F5B409B8B /* DockModeCore in Frameworks */,
+				2B4D25946B5E42990427D3B2 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		013C4E4179E44829FD6B1004 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5A8E180AB22D3D25F41626F3 /* Localizable.strings */,
+				DE48FAD5D51ED1F73FC66498 /* Assets.xcassets */,
+				07CCA0A8AE1C72B40F759AC3 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2F416DEB5553377142115C70 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				BB29B0538D31F09621D09743 /* DockModeCoreTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		40967ABD3E6A2D614F5191D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3F84AD29E6DD03D07F970D25 /* DockMode.app */,
+				7DAB89CF41C8FCACE10FFD69 /* DockModeCoreTests.xctest */,
+				35953CE1D92C1248B9B065E4 /* DockModeFocusExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		40DB902CF617DE928F411AA0 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				DE1C594950C6A32387030AD0 /* Shared.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		42DD1689B9E53DBD1F442C82 /* FocusExtension */ = {
+			isa = PBXGroup;
+			children = (
+				5D1B6DC786FE346BBB7F4C9A /* Localizable.strings */,
+				0031F410096E003E33F12FBE /* DockModeFocusExtension.entitlements */,
+				BDC7AEE40C19A41F2B946597 /* DockModeFocusExtension.swift */,
+				6D9E49558A4338345A4C3857 /* DockModeFocusFilter.swift */,
+				A81416EAA5B8B7726946472B /* DockModeProfileEntity.swift */,
+				A51BF492855094771CFCB687 /* Info.plist */,
+			);
+			path = FocusExtension;
+			sourceTree = "<group>";
+		};
+		5C422DCD17A1057230499A5A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8EA5F26C6DF7739E1FE03F61 /* AppModel.swift */,
+				7C2A41B5F120020BBA0B5D02 /* DiagnosticsExporter.swift */,
+				0D3566D86C2727B1C0C73366 /* DockMode.entitlements */,
+				2D21DF19DAE950E8BDA6B761 /* DockModeApp.swift */,
+				276F95A924FC0996A4C5D15D /* FocusRequestObserver.swift */,
+				6AB312EEE76AA889CFD70CA3 /* Info.plist */,
+				38EDF8E9A2A1C6B05D4EF9E4 /* LaunchAtLoginManager.swift */,
+				546A810F6DE970C5C4FBD527 /* MenuBarContentView.swift */,
+				EA3C2D64BE7B2139853D78BC /* ProfileColor+SwiftUI.swift */,
+				0974E20C3A0C0EF54B3C1BB5 /* ProfileEditorView.swift */,
+				F1BD82932C66DA369B596324 /* ProfileManagementView.swift */,
+				442FEF5F12038D57619F1B7F /* UpdaterController.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		93242A447E8A2808DED45BC6 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				0C3F19CAAF2221912E0B13F6 /* DockMode */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		BB29B0538D31F09621D09743 /* DockModeCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				D9D85C1F716D1A47C48BC9E1 /* ApplicationCatalogTests.swift */,
+				CB7C42A887BACE7651B38790 /* DockRepositoryTests.swift */,
+				C9D2F2816948E3E7370F4252 /* ModelsTests.swift */,
+				8985FE0AFF47D5FF8B4F6A5C /* ProfileStoreTests.swift */,
+			);
+			path = DockModeCoreTests;
+			sourceTree = "<group>";
+		};
+		EA6D53A393BDE8CFF5B1A55B = {
+			isa = PBXGroup;
+			children = (
+				5C422DCD17A1057230499A5A /* App */,
+				40DB902CF617DE928F411AA0 /* Config */,
+				42DD1689B9E53DBD1F442C82 /* FocusExtension */,
+				93242A447E8A2808DED45BC6 /* Packages */,
+				013C4E4179E44829FD6B1004 /* Resources */,
+				2F416DEB5553377142115C70 /* Tests */,
+				40967ABD3E6A2D614F5191D1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2C0DD1FE1F45B5B84394745F /* DockMode */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95E47C1DCAB768D5B0FE4725 /* Build configuration list for PBXNativeTarget "DockMode" */;
+			buildPhases = (
+				F72892686FC965E51E596AD8 /* Sources */,
+				6EAC79576CF59F5A872A72A8 /* Resources */,
+				F85858DDA773522E17BC47BD /* Frameworks */,
+				4B0A64ACBC00322B72B967B1 /* Embed ExtensionKit Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0E1C3E25C24FAAC9D5C578B2 /* PBXTargetDependency */,
+			);
+			name = DockMode;
+			packageProductDependencies = (
+				445952208508DFE65A66EB62 /* DockModeCore */,
+				6C631AD5F483094ADAAFBE23 /* Sparkle */,
+			);
+			productName = DockMode;
+			productReference = 3F84AD29E6DD03D07F970D25 /* DockMode.app */;
+			productType = "com.apple.product-type.application";
+		};
+		47D2F1120E95B5ED188C2ABC /* DockModeFocusExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7EB294D3A9295CECDDF23C59 /* Build configuration list for PBXNativeTarget "DockModeFocusExtension" */;
+			buildPhases = (
+				9FE8137F48D9C6EE9F8D52BC /* Sources */,
+				8B11EC623318F76EC73DC839 /* Resources */,
+				28A5FFE816D54EF13AF3DD02 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DockModeFocusExtension;
+			packageProductDependencies = (
+				AF9F0AB1B8869F7043E22152 /* DockModeCore */,
+			);
+			productName = DockModeFocusExtension;
+			productReference = 35953CE1D92C1248B9B065E4 /* DockModeFocusExtension.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		E76A1953A585121C48AD8838 /* DockModeCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 841FF5F633B4E5CCFAEFFE73 /* Build configuration list for PBXNativeTarget "DockModeCoreTests" */;
+			buildPhases = (
+				A5EF90D408DA1E00A09D8099 /* Sources */,
+				5ECE404DC56BC3F483EA3D2F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DockModeCoreTests;
+			packageProductDependencies = (
+				3DE52B96DDA91A5E9C6FB164 /* DockModeCore */,
+			);
+			productName = DockModeCoreTests;
+			productReference = 7DAB89CF41C8FCACE10FFD69 /* DockModeCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BD4CC1E5B155801EAAF49173 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					2C0DD1FE1F45B5B84394745F = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					47D2F1120E95B5ED188C2ABC = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					E76A1953A585121C48AD8838 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5234B9603E7C7640D52555C6 /* Build configuration list for PBXProject "DockMode" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				fr,
+			);
+			mainGroup = EA6D53A393BDE8CFF5B1A55B;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B6D46492104AE19580670ACE /* XCRemoteSwiftPackageReference "Sparkle" */,
+				1FC26E4F84FA07A49FB6E53E /* XCLocalSwiftPackageReference "." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 40967ABD3E6A2D614F5191D1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C0DD1FE1F45B5B84394745F /* DockMode */,
+				47D2F1120E95B5ED188C2ABC /* DockModeFocusExtension */,
+				E76A1953A585121C48AD8838 /* DockModeCoreTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6EAC79576CF59F5A872A72A8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				525C42422D15F83DEF4C5757 /* Assets.xcassets in Resources */,
+				B94AC974662E6A250571C836 /* Localizable.strings in Resources */,
+				C1D160D91F58788E9193A1DD /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B11EC623318F76EC73DC839 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				991EBD15393D1E6FA29FD037 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9FE8137F48D9C6EE9F8D52BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E865EDB641CCA727C5B03F83 /* DockModeFocusExtension.swift in Sources */,
+				8A294677317356DE67FFB020 /* DockModeFocusFilter.swift in Sources */,
+				5B43076056D7353901419042 /* DockModeProfileEntity.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5EF90D408DA1E00A09D8099 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				739D04344F75ECB34DE9256B /* ApplicationCatalogTests.swift in Sources */,
+				7EB619BEE9A85D69A37AB38C /* DockRepositoryTests.swift in Sources */,
+				5F5BBC56CD363F99FB11A0E3 /* ModelsTests.swift in Sources */,
+				9B3AEB451FAE3626451B53EB /* ProfileStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F72892686FC965E51E596AD8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A37A95F58EEC8F444066094C /* AppModel.swift in Sources */,
+				8F796BE0BCEA14D575ACB52A /* DiagnosticsExporter.swift in Sources */,
+				D1AE53A7DCD68C39BB235D52 /* DockModeApp.swift in Sources */,
+				F4C8FFB1C727C61A52B66DC0 /* FocusRequestObserver.swift in Sources */,
+				C749FC25C0D2039B400BDAC3 /* LaunchAtLoginManager.swift in Sources */,
+				A21D6F9ECEA298E379567B53 /* MenuBarContentView.swift in Sources */,
+				549C5155D5FF743365A23717 /* ProfileColor+SwiftUI.swift in Sources */,
+				938CEA3531CEDE0C8EFB78E2 /* ProfileEditorView.swift in Sources */,
+				A6845954608F3BB56CE18AF1 /* ProfileManagementView.swift in Sources */,
+				FDD2FD0BDC560BC922966734 /* UpdaterController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0E1C3E25C24FAAC9D5C578B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47D2F1120E95B5ED188C2ABC /* DockModeFocusExtension */;
+			targetProxy = 8A6AE030EEBB3B45B09B786B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		5A8E180AB22D3D25F41626F3 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C39343C4864E02F10232030E /* en */,
+				ED87B6A00D613F1DA46DF085 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		5D1B6DC786FE346BBB7F4C9A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				41EC2527CED4DD36859E6A14 /* en */,
+				0F0B05FDE4F17D050677C9CD /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		14AECA1DDD54A484603600F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockModeCoreTests;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		315D04D54E002B5CD67CCC1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE1C594950C6A32387030AD0 /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		5FD462AE45598C85C36086F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/DockMode.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockMode;
+				PRODUCT_NAME = DockMode;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DOCKMODE_APP_PROFILE)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+			};
+			name = Debug;
+		};
+		A3FCC9C0973AF006904AB3C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE1C594950C6A32387030AD0 /* Shared.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B4CC5C77168D14ACA7B4E486 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/DockMode.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockMode;
+				PRODUCT_NAME = DockMode;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DOCKMODE_APP_PROFILE)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+			};
+			name = Release;
+		};
+		C6ACB2D6F38873819F375C46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FocusExtension/DockModeFocusExtension.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FocusExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockMode.FocusExtension;
+				PRODUCT_NAME = DockModeFocusExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DOCKMODE_FOCUS_PROFILE)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+			};
+			name = Release;
+		};
+		EA4F11BC544306E0DF985006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FocusExtension/DockModeFocusExtension.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FocusExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockMode.FocusExtension;
+				PRODUCT_NAME = DockModeFocusExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DOCKMODE_FOCUS_PROFILE)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+			};
+			name = Debug;
+		};
+		F9ACE5D8DABD77FFAD5B18F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.wiselaunch.DockModeCoreTests;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5234B9603E7C7640D52555C6 /* Build configuration list for PBXProject "DockMode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A3FCC9C0973AF006904AB3C3 /* Debug */,
+				315D04D54E002B5CD67CCC1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7EB294D3A9295CECDDF23C59 /* Build configuration list for PBXNativeTarget "DockModeFocusExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA4F11BC544306E0DF985006 /* Debug */,
+				C6ACB2D6F38873819F375C46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		841FF5F633B4E5CCFAEFFE73 /* Build configuration list for PBXNativeTarget "DockModeCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				14AECA1DDD54A484603600F6 /* Debug */,
+				F9ACE5D8DABD77FFAD5B18F4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		95E47C1DCAB768D5B0FE4725 /* Build configuration list for PBXNativeTarget "DockMode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD462AE45598C85C36086F0 /* Debug */,
+				B4CC5C77168D14ACA7B4E486 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		1FC26E4F84FA07A49FB6E53E /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B6D46492104AE19580670ACE /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.9.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3DE52B96DDA91A5E9C6FB164 /* DockModeCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DockModeCore;
+		};
+		445952208508DFE65A66EB62 /* DockModeCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DockModeCore;
+		};
+		6C631AD5F483094ADAAFBE23 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6D46492104AE19580670ACE /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		AF9F0AB1B8869F7043E22152 /* DockModeCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DockModeCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = BD4CC1E5B155801EAAF49173 /* Project object */;
+}
