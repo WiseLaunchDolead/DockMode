@@ -2,6 +2,17 @@ import DockModeCore
 import XCTest
 
 final class ModelsTests: XCTestCase {
+    private let mail = ApplicationReference(
+        bundleIdentifier: "com.apple.mail",
+        displayName: "Mail",
+        lastKnownPath: "/System/Applications/Mail.app"
+    )
+    private let calendar = ApplicationReference(
+        bundleIdentifier: "com.apple.iCal",
+        displayName: "Calendar",
+        lastKnownPath: "/System/Applications/Calendar.app"
+    )
+
     func testProfileNameMustBePresentAndUnique() throws {
         let existing = Profile(name: "Salarié", items: [])
 
@@ -116,5 +127,107 @@ final class ModelsTests: XCTestCase {
         // therefore remains the restoration target until the next Focus event.
         XCTAssertTrue(state.isActive)
         XCTAssertEqual(state.profileBeforeFocusID, original)
+    }
+
+    func testDockLayoutDraftDirtyStateAndDiscard() {
+        let initial = [DockItem.application(mail)]
+        var draft = DockLayoutDraft(savedItems: initial)
+
+        XCTAssertFalse(draft.isDirty)
+        draft.addSpacer(.compact)
+        XCTAssertTrue(draft.isDirty)
+
+        draft.discardChanges()
+        XCTAssertFalse(draft.isDirty)
+        XCTAssertEqual(draft.items, initial)
+    }
+
+    func testDockLayoutDraftRejectsDuplicateApplications() {
+        var draft = DockLayoutDraft(savedItems: [.application(mail)])
+
+        XCTAssertFalse(draft.addApplication(mail))
+        XCTAssertTrue(draft.addApplication(calendar))
+        XCTAssertEqual(draft.items.count, 2)
+    }
+
+    func testDockLayoutDraftAddsSmallAndRegularSpacers() {
+        var draft = DockLayoutDraft(savedItems: [])
+
+        draft.addSpacer(.compact)
+        draft.addSpacer(.regular)
+
+        XCTAssertEqual(draft.items.map(\.content), [.spacer(.compact), .spacer(.regular)])
+    }
+
+    func testDockLayoutDraftMoveAndRemoveOperations() {
+        let first = DockItem.application(mail)
+        let spacer = DockItem.spacer(.regular)
+        let last = DockItem.application(calendar)
+        var draft = DockLayoutDraft(savedItems: [first, spacer, last])
+
+        XCTAssertFalse(draft.move(id: first.id, direction: .left))
+        XCTAssertTrue(draft.move(id: last.id, before: first.id))
+        XCTAssertEqual(draft.items.map(\.id), [last.id, first.id, spacer.id])
+        XCTAssertTrue(draft.move(id: first.id, direction: .right))
+        XCTAssertFalse(draft.move(id: first.id, direction: .right))
+        XCTAssertTrue(draft.remove(id: first.id))
+        XCTAssertEqual(draft.items.map(\.id), [last.id, spacer.id])
+    }
+
+    func testDockLayoutDraftReordersAcrossAdjacentItems() {
+        let first = DockItem.application(mail)
+        let second = DockItem.spacer(.compact)
+        let third = DockItem.application(calendar)
+        var draft = DockLayoutDraft(savedItems: [first, second, third])
+
+        XCTAssertTrue(draft.reorder(id: first.id, toPositionOf: second.id))
+        XCTAssertEqual(draft.items.map(\.id), [second.id, first.id, third.id])
+        XCTAssertTrue(draft.reorder(id: third.id, toPositionOf: second.id))
+        XCTAssertEqual(draft.items.map(\.id), [third.id, second.id, first.id])
+    }
+
+    func testDockLayoutDraftSynchronizesSavedChangesWithoutOverwritingEdits() {
+        let first = DockItem.application(mail)
+        let refreshed = [DockItem.application(calendar)]
+        var dirty = DockLayoutDraft(savedItems: [first])
+        dirty.addSpacer(.regular)
+
+        dirty.synchronize(with: refreshed)
+        XCTAssertTrue(dirty.isDirty)
+        XCTAssertEqual(dirty.items.first?.id, first.id)
+        XCTAssertEqual(dirty.savedItems, refreshed)
+
+        var clean = DockLayoutDraft(savedItems: [first])
+        clean.synchronize(with: refreshed)
+        XCTAssertFalse(clean.isDirty)
+        XCTAssertEqual(clean.items, refreshed)
+    }
+
+    func testDockLayoutDraftReplaceKeepsItemIdentity() {
+        let item = DockItem.application(mail)
+        var draft = DockLayoutDraft(savedItems: [item])
+
+        XCTAssertTrue(draft.replace(id: item.id, with: .application(calendar)))
+        XCTAssertEqual(draft.items.first?.id, item.id)
+        XCTAssertEqual(draft.items.first?.content, .application(calendar))
+    }
+
+    func testDockLayoutSavePolicyOnlyAppliesTheActiveProfile() {
+        let activeID = UUID()
+
+        XCTAssertEqual(
+            DockLayoutSavePolicy.action(profileID: activeID, activeProfileID: activeID),
+            .applyToDock
+        )
+        XCTAssertEqual(
+            DockLayoutSavePolicy.action(profileID: UUID(), activeProfileID: activeID),
+            .persistOnly
+        )
+    }
+
+    func testUnsavedDraftChoicesProduceTheExpectedEffects() {
+        XCTAssertEqual(UnsavedDraftPolicy.effect(for: .save), .saveAndContinue)
+        XCTAssertEqual(UnsavedDraftPolicy.effect(for: .discard), .discardAndContinue)
+        XCTAssertEqual(UnsavedDraftPolicy.effect(for: .cancel), .stay)
     }
 }

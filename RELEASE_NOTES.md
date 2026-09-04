@@ -7,4 +7,6 @@ Initial release:
 - automatic saving of changes made in the active Dock;
 - one-click switching from the menu bar;
 - native macOS Focus filter;
+- Liquid Glass Dock preview with draft-only editing, application search, reordering, and Small/Regular spacers;
+- separate save and activation actions so inactive profiles never change the current Dock;
 - local-only storage with no analytics.

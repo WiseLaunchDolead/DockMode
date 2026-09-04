@@ -26,6 +26,26 @@ struct DockModeCoreChecks {
             "spacer identities remain stable"
         )
 
+        let draftApplication = ApplicationReference(
+            bundleIdentifier: "example.draft",
+            displayName: "Draft",
+            lastKnownPath: "/Applications/Draft.app"
+        )
+        let draftItem = DockItem.application(draftApplication)
+        var draft = DockLayoutDraft(savedItems: [draftItem])
+        draft.addSpacer(.compact)
+        draft.addSpacer(.regular)
+        checks.expect(draft.isDirty, "Dock editor changes remain in a dirty draft")
+        draft.discardChanges()
+        checks.expect(
+            !draft.isDirty && draft.items == [draftItem],
+            "discarding a Dock draft restores its saved layout"
+        )
+        checks.expect(
+            DockLayoutSavePolicy.action(profileID: UUID(), activeProfileID: UUID()) == .persistOnly,
+            "an inactive Dock layout is saved without being applied"
+        )
+
         let codec = DockCodec()
         let rawItems = [
             applicationTile(path: "/Applications/Claude.app", bundleID: "com.anthropic.claudefordesktop"),

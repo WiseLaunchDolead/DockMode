@@ -125,6 +125,7 @@ final class AppModel: ObservableObject {
     func updateProfile(id: UUID, name: String, color: ProfileColor, items: [DockItem]) throws {
         let normalizedName = try ProfileValidator.validateName(name, excluding: id, in: profiles)
         guard let index = document.profiles.firstIndex(where: { $0.id == id }) else { return }
+        let previousDocument = document
 
         var updated = document.profiles[index]
         updated.name = normalizedName
@@ -132,8 +133,8 @@ final class AppModel: ObservableObject {
         updated.items = deduplicated(items)
         updated.updatedAt = Date()
 
-        if document.activeProfileID == id {
-            let previousDocument = document
+        if DockLayoutSavePolicy.action(profileID: id, activeProfileID: document.activeProfileID)
+            == .applyToDock {
             let previousMissingApplications = missingApplications
             let previousFingerprint = expectedDockFingerprint
             do {
@@ -163,8 +164,33 @@ final class AppModel: ObservableObject {
             }
         } else {
             document.profiles[index] = updated
-            try persist()
+            do {
+                try persist()
+            } catch {
+                document = previousDocument
+                throw error
+            }
         }
+    }
+
+    func saveDockLayout(profileID: UUID, items: [DockItem]) throws {
+        guard let profile = document.profiles.first(where: { $0.id == profileID }) else { return }
+        try updateProfile(
+            id: profileID,
+            name: profile.name,
+            color: profile.color,
+            items: items
+        )
+    }
+
+    func renameProfile(id: UUID, name: String) throws {
+        guard let profile = document.profiles.first(where: { $0.id == id }) else { return }
+        try updateProfile(id: id, name: name, color: profile.color, items: profile.items)
+    }
+
+    func recolorProfile(id: UUID, color: ProfileColor) throws {
+        guard let profile = document.profiles.first(where: { $0.id == id }) else { return }
+        try updateProfile(id: id, name: profile.name, color: color, items: profile.items)
     }
 
     func deleteProfile(id: UUID) throws {

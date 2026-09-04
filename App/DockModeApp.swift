@@ -49,12 +49,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if managerWindowController == nil {
             let rootView = ProfileManagementView(model: model)
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 1_050, height: 700),
-                styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                contentRect: NSRect(x: 0, y: 0, width: 900, height: 420),
+                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false
             )
             window.title = "DockMode"
+            window.titleVisibility = .hidden
+            window.titlebarAppearsTransparent = true
+            window.toolbarStyle = .unifiedCompact
+            window.isOpaque = false
+            window.backgroundColor = .clear
+            window.isMovableByWindowBackground = true
+            window.minSize = NSSize(width: 720, height: 360)
             window.center()
             window.isReleasedWhenClosed = false
             window.contentViewController = NSHostingController(rootView: rootView)
