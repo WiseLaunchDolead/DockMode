@@ -44,4 +44,12 @@ jobs:
             -destination 'generic/platform=macOS' \
             ARCHS='arm64 x86_64' \
             ONLY_ACTIVE_ARCH=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build/DerivedData
+
+      - name: Create and verify DMG layout
+        run: |
+          mkdir -p build/Release
+          ditto build/DerivedData/Build/Products/Release/DockMode.app build/Release/DockMode.app
+          scripts/create-dmg.sh build/Release/DockMode.app build/DockMode-ci.dmg
+          scripts/verify-dmg-layout.sh build/DockMode-ci.dmg
