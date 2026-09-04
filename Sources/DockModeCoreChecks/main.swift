@@ -45,6 +45,20 @@ struct DockModeCoreChecks {
             DockLayoutSavePolicy.action(profileID: UUID(), activeProfileID: UUID()) == .persistOnly,
             "an inactive Dock layout is saved without being applied"
         )
+        let compactDraftSpacer = DockItem.spacer(.compact)
+        let regularDraftSpacer = DockItem.spacer(.regular)
+        var groupedDraft = DockLayoutDraft(
+            savedItems: [draftItem, compactDraftSpacer, regularDraftSpacer]
+        )
+        _ = groupedDraft.move(
+            ids: [draftItem.id, compactDraftSpacer.id],
+            to: .end
+        )
+        checks.expect(
+            groupedDraft.items.map(\.id)
+                == [regularDraftSpacer.id, draftItem.id, compactDraftSpacer.id],
+            "grouped Dock moves preserve selection order"
+        )
 
         let codec = DockCodec()
         let rawItems = [

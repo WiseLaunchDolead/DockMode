@@ -106,3 +106,9 @@
 "%d items" = "%d items";
 "Unsaved" = "Unsaved";
 "Not Active" = "Not Active";
+"Select Item" = "Select Item";
+"Deselect Item" = "Deselect Item";
+"Remove Selected Items" = "Remove Selected Items";
+"1 selected item" = "1 selected item";
+"%d selected items" = "%d selected items";
+"Drag to reorder. Command-click to select multiple items; right-click for more actions." = "Drag to reorder. Command-click to select multiple items; right-click for more actions.";

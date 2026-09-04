@@ -186,6 +186,66 @@ final class ModelsTests: XCTestCase {
         XCTAssertEqual(draft.items.map(\.id), [third.id, second.id, first.id])
     }
 
+    func testDockLayoutDraftMovesContiguousSelectionToEnd() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        let regular = DockItem.spacer(.regular)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second, regular])
+
+        XCTAssertTrue(draft.move(ids: [compact.id, second.id], to: .end))
+        XCTAssertEqual(draft.items.map(\.id), [first.id, regular.id, compact.id, second.id])
+    }
+
+    func testDockLayoutDraftMovesNonContiguousSelectionAndPreservesLayoutOrder() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        let regular = DockItem.spacer(.regular)
+        let last = DockItem.spacer(.flexible)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second, regular, last])
+
+        XCTAssertTrue(draft.move(ids: [second.id, first.id], to: .after(regular.id)))
+        XCTAssertEqual(
+            draft.items.map(\.id),
+            [compact.id, regular.id, first.id, second.id, last.id]
+        )
+    }
+
+    func testDockLayoutDraftMovesSelectionToBeginning() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        let regular = DockItem.spacer(.regular)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second, regular])
+
+        XCTAssertTrue(draft.move(ids: [regular.id, second.id], to: .before(first.id)))
+        XCTAssertEqual(draft.items.map(\.id), [second.id, regular.id, first.id, compact.id])
+    }
+
+    func testDockLayoutDraftTreatsDropsInsideSelectionAndUnknownIDsAsNoOps() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second])
+
+        XCTAssertFalse(draft.move(ids: [compact.id, second.id], to: .before(second.id)))
+        XCTAssertFalse(draft.move(ids: [UUID()], to: .end))
+        XCTAssertFalse(draft.move(ids: [first.id], to: .before(UUID())))
+        XCTAssertEqual(draft.items.map(\.id), [first.id, compact.id, second.id])
+    }
+
+    func testDockLayoutDraftRemovesMixedSelectionAtomically() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second])
+
+        XCTAssertTrue(draft.remove(ids: [first.id, compact.id]))
+        XCTAssertEqual(draft.items.map(\.id), [second.id])
+        XCTAssertFalse(draft.remove(ids: [UUID()]))
+    }
+
     func testDockLayoutDraftSynchronizesSavedChangesWithoutOverwritingEdits() {
         let first = DockItem.application(mail)
         let refreshed = [DockItem.application(calendar)]

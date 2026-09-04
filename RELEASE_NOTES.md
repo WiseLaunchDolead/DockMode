@@ -9,4 +9,6 @@ Initial release:
 - native macOS Focus filter;
 - Liquid Glass Dock preview with draft-only editing, application search, reordering, and Small/Regular spacers;
 - separate save and activation actions so inactive profiles never change the current Dock;
+- Command-click multi-selection and grouped drag-and-drop for applications and spacers;
+- SF Symbol icons for menu-bar actions;
 - local-only storage with no analytics.

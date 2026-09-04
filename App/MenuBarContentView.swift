@@ -17,43 +17,55 @@ struct MenuBarContentView: View {
                     model.presentError(error)
                 }
             } label: {
-                HStack {
-                    Circle()
-                        .fill(Color(profileColor: profile.color))
-                        .frame(width: 8, height: 8)
+                Label {
                     Text(profile.name)
-                    if profile.id == model.document.activeProfileID {
-                        Image(systemName: "checkmark")
-                    }
+                } icon: {
+                    Image(systemName: profile.id == model.document.activeProfileID
+                        ? "checkmark.circle.fill"
+                        : "circle.fill")
+                        .foregroundStyle(Color(profileColor: profile.color))
                 }
             }
             .disabled(model.isSwitching)
         }
 
         if model.profiles.isEmpty {
-            Button("Finish DockMode Setup…") { showManager(false) }
+            Button { showManager(false) } label: {
+                Label("Finish DockMode Setup…", systemImage: "wand.and.stars")
+            }
         }
 
         if !model.missingApplications.isEmpty {
             Divider()
-            Text("Some profile applications are unavailable")
+            Label("Some profile applications are unavailable", systemImage: "exclamationmark.triangle")
         }
 
         Divider()
-        Button("New Profile…") { showManager(true) }
+        Button { showManager(true) } label: {
+            Label("New Profile…", systemImage: "plus.circle")
+        }
             .disabled(model.profiles.isEmpty)
-        Button("Manage Profiles…") { showManager(false) }
+        Button { showManager(false) } label: {
+            Label("Manage Profiles…", systemImage: "slider.horizontal.3")
+        }
 
         Divider()
-        Button("Check for Updates…", action: checkForUpdates)
+        Button(action: checkForUpdates) {
+            Label("Check for Updates…", systemImage: "arrow.triangle.2.circlepath")
+        }
             .disabled(!canCheckForUpdates)
         if model.launchAtLoginState == .requiresApproval {
-            Text("Launch at login requires approval in System Settings")
+            Label(
+                "Launch at login requires approval in System Settings",
+                systemImage: "exclamationmark.triangle"
+            )
         }
 
         Divider()
-        Button("Quit DockMode") {
+        Button {
             NSApplication.shared.terminate(nil)
+        } label: {
+            Label("Quit DockMode", systemImage: "power")
         }
         .keyboardShortcut("q")
     }

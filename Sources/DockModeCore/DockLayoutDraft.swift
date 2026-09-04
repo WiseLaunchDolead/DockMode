@@ -5,6 +5,12 @@ public enum DockMoveDirection: Sendable {
     case right
 }
 
+public enum DockInsertionTarget: Equatable, Sendable {
+    case before(UUID)
+    case after(UUID)
+    case end
+}
+
 public enum DockLayoutSaveAction: Equatable, Sendable {
     case applyToDock
     case persistOnly
@@ -76,6 +82,14 @@ public struct DockLayoutDraft: Equatable, Sendable {
     }
 
     @discardableResult
+    public mutating func remove(ids: Set<UUID>) -> Bool {
+        guard !ids.isEmpty else { return false }
+        let previousCount = items.count
+        items.removeAll(where: { ids.contains($0.id) })
+        return items.count != previousCount
+    }
+
+    @discardableResult
     public mutating func move(id: UUID, direction: DockMoveDirection) -> Bool {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return false }
         let destination: Int
@@ -114,6 +128,40 @@ public struct DockLayoutDraft: Equatable, Sendable {
 
         let item = items.remove(at: sourceIndex)
         items.insert(item, at: min(destinationIndex, items.count))
+        return true
+    }
+
+    @discardableResult
+    public mutating func move(ids: [UUID], to target: DockInsertionTarget) -> Bool {
+        let requestedIDs = Set(ids)
+        guard !requestedIDs.isEmpty else { return false }
+
+        let movingItems = items.filter { requestedIDs.contains($0.id) }
+        guard !movingItems.isEmpty else { return false }
+
+        let boundary: Int
+        switch target {
+        case let .before(destinationID):
+            guard let destinationIndex = items.firstIndex(where: { $0.id == destinationID }) else {
+                return false
+            }
+            boundary = destinationIndex
+        case let .after(destinationID):
+            guard let destinationIndex = items.firstIndex(where: { $0.id == destinationID }) else {
+                return false
+            }
+            boundary = destinationIndex + 1
+        case .end:
+            boundary = items.count
+        }
+
+        let removedBeforeBoundary = items[..<boundary].count(where: { requestedIDs.contains($0.id) })
+        var reorderedItems = items.filter { !requestedIDs.contains($0.id) }
+        let insertionIndex = min(max(0, boundary - removedBeforeBoundary), reorderedItems.count)
+        reorderedItems.insert(contentsOf: movingItems, at: insertionIndex)
+
+        guard reorderedItems != items else { return false }
+        items = reorderedItems
         return true
     }
 

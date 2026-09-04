@@ -106,3 +106,9 @@
 "%d items" = "%d éléments";
 "Unsaved" = "Non enregistré";
 "Not Active" = "Inactif";
+"Select Item" = "Sélectionner l’élément";
+"Deselect Item" = "Désélectionner l’élément";
+"Remove Selected Items" = "Retirer les éléments sélectionnés";
+"1 selected item" = "1 élément sélectionné";
+"%d selected items" = "%d éléments sélectionnés";
+"Drag to reorder. Command-click to select multiple items; right-click for more actions." = "Faites glisser pour réordonner. Faites Commande-clic pour sélectionner plusieurs éléments et un clic droit pour plus d’actions.";

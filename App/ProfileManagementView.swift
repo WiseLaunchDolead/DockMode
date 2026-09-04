@@ -8,7 +8,7 @@ struct ProfileManagementView: View {
     @State private var previousActiveProfileID: UUID?
     @State private var draft = DockLayoutDraft(savedItems: [])
     @State private var draftProfileID: UUID?
-    @State private var draggedItemID: UUID?
+    @State private var selectedDockItemIDs: Set<UUID> = []
     @State private var pendingAction: PendingEditorAction?
     @State private var isShowingUnsavedAlert = false
     @State private var profileFormMode: ProfileFormMode?
@@ -149,7 +149,7 @@ struct ProfileManagementView: View {
 
             DockPreviewView(
                 draft: $draft,
-                draggedItemID: $draggedItemID,
+                selectedItemIDs: $selectedDockItemIDs,
                 tint: Color(profileColor: profile.color)
             )
             .padding(.vertical, 22)
@@ -323,7 +323,7 @@ struct ProfileManagementView: View {
                 Label("Some profile applications are unavailable", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange)
             } else {
-                Text("Drag items to reorder. Right-click an item for more actions.")
+                Text("Drag to reorder. Command-click to select multiple items; right-click for more actions.")
                     .foregroundStyle(.secondary)
             }
 
@@ -427,6 +427,7 @@ struct ProfileManagementView: View {
             performPendingAction()
         case .discardAndContinue:
             draft.discardChanges()
+            selectedDockItemIDs.removeAll()
             performPendingAction()
         case .stay:
             pendingAction = nil
@@ -448,7 +449,7 @@ struct ProfileManagementView: View {
         selectedProfileID = profileID
         draftProfileID = profileID
         draft = DockLayoutDraft(savedItems: profile.items)
-        draggedItemID = nil
+        selectedDockItemIDs.removeAll()
     }
 
     private func synchronizeSelectedProfile() {
@@ -461,7 +462,13 @@ struct ProfileManagementView: View {
         }
 
         if draftProfileID == selectedProfileID {
+            let previousItems = draft.items
             draft.synchronize(with: profile.items)
+            if previousItems != draft.items {
+                selectedDockItemIDs.removeAll()
+            } else {
+                selectedDockItemIDs.formIntersection(Set(draft.items.map(\.id)))
+            }
         } else {
             loadProfile(selectedProfileID)
         }

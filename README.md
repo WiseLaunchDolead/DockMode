@@ -9,7 +9,7 @@ It changes the real macOS Dock. It never launches, quits, hides, or blocks appli
 - Unlimited profiles with a name and color.
 - One-click profile switching from the menu bar.
 - Compact Liquid Glass editor with a live Dock preview on macOS 26 and a Material fallback on macOS 14/15.
-- Searchable multi-application picker, drag-to-reorder editing, and explicit save/apply actions.
+- Searchable multi-application picker, Command-click multi-selection, grouped drag-to-reorder editing, and explicit save/apply actions.
 - Compact and standard native Dock spacers; existing flexible spacers remain editable for compatibility.
 - Automatic capture of manual Dock additions, removals, and reordering.
 - Native Focus filter that can activate a profile with a macOS Focus.
