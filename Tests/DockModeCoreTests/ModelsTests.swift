@@ -159,6 +159,56 @@ final class ModelsTests: XCTestCase {
         XCTAssertEqual(draft.items.map(\.content), [.spacer(.compact), .spacer(.regular)])
     }
 
+    func testDockPreviewFitsACommonTwelveItemLayoutInACompactWindow() {
+        let applications = (0..<10).map { index in
+            DockItem.application(
+                ApplicationReference(
+                    bundleIdentifier: "test.application.\(index)",
+                    displayName: "Application \(index)",
+                    lastKnownPath: "/Applications/Application \(index).app"
+                )
+            )
+        }
+        let items = Array(applications.prefix(5))
+            + [.spacer(.compact)]
+            + Array(applications.suffix(5))
+            + [.spacer(.regular)]
+
+        let metrics = DockPreviewLayoutCalculator.metrics(for: items, availableWidth: 659)
+
+        XCTAssertLessThanOrEqual(metrics.contentWidth, 659)
+        XCTAssertTrue(metrics.fitsWithoutScrolling)
+        XCTAssertGreaterThan(metrics.iconSize, DockPreviewLayoutCalculator.minimumIconSize)
+        XCTAssertLessThan(metrics.iconSize, DockPreviewLayoutCalculator.maximumIconSize)
+    }
+
+    func testDockPreviewUsesFullSizeWhenThereIsEnoughRoom() {
+        let items = [DockItem.application(mail), DockItem.spacer(.regular), DockItem.application(calendar)]
+
+        let metrics = DockPreviewLayoutCalculator.metrics(for: items, availableWidth: 900)
+
+        XCTAssertEqual(metrics.iconSize, DockPreviewLayoutCalculator.maximumIconSize)
+        XCTAssertTrue(metrics.fitsWithoutScrolling)
+    }
+
+    func testDockPreviewKeepsVeryLongLayoutsScrollableAtTheMinimumSize() {
+        let items = (0..<24).map { index in
+            DockItem.application(
+                ApplicationReference(
+                    bundleIdentifier: "test.long-layout.\(index)",
+                    displayName: "Application \(index)",
+                    lastKnownPath: "/Applications/Application \(index).app"
+                )
+            )
+        }
+
+        let metrics = DockPreviewLayoutCalculator.metrics(for: items, availableWidth: 659)
+
+        XCTAssertEqual(metrics.iconSize, DockPreviewLayoutCalculator.minimumIconSize)
+        XCTAssertGreaterThan(metrics.contentWidth, 659)
+        XCTAssertFalse(metrics.fitsWithoutScrolling)
+    }
+
     func testDockLayoutDraftMoveAndRemoveOperations() {
         let first = DockItem.application(mail)
         let spacer = DockItem.spacer(.regular)

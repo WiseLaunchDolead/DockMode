@@ -59,9 +59,13 @@ struct DockPreviewView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let iconSize = preferredIconSize(for: proxy.size.width)
+            let metrics = DockPreviewLayoutCalculator.metrics(
+                for: draft.items,
+                availableWidth: Double(proxy.size.width)
+            )
+            let iconSize = CGFloat(metrics.iconSize)
 
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal, showsIndicators: !metrics.fitsWithoutScrolling) {
                 HStack(spacing: max(5, iconSize * 0.10)) {
                     ForEach(Array(draft.items.enumerated()), id: \.element.id) { index, item in
                         DockPreviewItemView(
@@ -106,20 +110,6 @@ struct DockPreviewView: View {
         .frame(height: 126)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Dock Preview")
-    }
-
-    private func preferredIconSize(for availableWidth: CGFloat) -> CGFloat {
-        guard !draft.items.isEmpty else { return 54 }
-        let spacerWeight = draft.items.reduce(CGFloat.zero) { partial, item in
-            switch item.content {
-            case .application: partial + 1
-            case .spacer(.compact): partial + 0.42
-            case .spacer(.regular): partial + 0.62
-            case .spacer(.flexible): partial + 0.9
-            }
-        }
-        let availableForItems = max(0, availableWidth - 110)
-        return min(58, max(38, availableForItems / max(1, spacerWeight)))
     }
 }
 
