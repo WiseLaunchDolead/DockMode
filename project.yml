@@ -69,6 +69,8 @@ targets:
         PRODUCT_NAME: DockModeFocusExtension
         INFOPLIST_FILE: FocusExtension/Info.plist
         GENERATE_INFOPLIST_FILE: YES
+        MARKETING_VERSION: 1.0.0
+        CURRENT_PROJECT_VERSION: 1
         CODE_SIGN_ENTITLEMENTS: FocusExtension/DockModeFocusExtension.entitlements
         SKIP_INSTALL: YES
         PROVISIONING_PROFILE_SPECIFIER: $(DOCKMODE_FOCUS_PROFILE)
