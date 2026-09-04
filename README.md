@@ -66,6 +66,21 @@ The generated Xcode project is committed so the app can also be opened immediate
 
 The local core checks use an in-memory Dock preference store and never read or modify your actual Dock. Xcode unit tests exercise the same codecs, persistence, missing-app behavior, and rollback path.
 
+### Local installation (unsigned development build)
+
+To create a local app and DMG after installing Xcode:
+
+```sh
+xcodebuild build -project DockMode.xcodeproj -scheme DockMode -configuration Release \
+  -destination 'generic/platform=macOS' ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO \
+  CODE_SIGNING_ALLOWED=NO -derivedDataPath build/DerivedData
+mkdir -p build/Release
+ditto "build/DerivedData/Build/Products/Release/DockMode.app" build/Release/DockMode.app
+scripts/create-dmg.sh build/Release/DockMode.app build/DockMode-local.dmg
+```
+
+Open `build/DockMode-local.dmg`, drag DockMode to **Applications**, then use **Open** from the Finder context menu if macOS warns that the development build is not signed. A public release must be signed and notarized with the Developer ID credentials described below.
+
 ### Project structure
 
 - `Sources/DockModeCore`: models, profile storage, app catalog, Focus request storage, and transactional Dock repository.
