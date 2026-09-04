@@ -1,3 +1,4 @@
+import AppKit
 import DockModeCore
 import XCTest
 
@@ -75,6 +76,24 @@ final class ModelsTests: XCTestCase {
         XCTAssertEqual(color.alpha, 1)
     }
 
+    func testProfileMenuIconsPreservePaletteAndCustomColors() throws {
+        let colors = ProfileColor.palette + [
+            ProfileColor(red: 0.96, green: 0.97, blue: 0.91)
+        ]
+
+        for expected in colors {
+            let image = ProfileMenuIconRenderer.image(for: expected)
+            let sampled = try XCTUnwrap(centerComponents(of: image))
+
+            XCTAssertEqual(image.size, ProfileMenuIconRenderer.iconSize)
+            XCTAssertFalse(image.isTemplate)
+            XCTAssertEqual(sampled.red, expected.red, accuracy: 0.005)
+            XCTAssertEqual(sampled.green, expected.green, accuracy: 0.005)
+            XCTAssertEqual(sampled.blue, expected.blue, accuracy: 0.005)
+            XCTAssertEqual(sampled.alpha, expected.alpha, accuracy: 0.005)
+        }
+    }
+
     func testFocusTransitionsPreserveTheOriginalProfileAcrossDirectSwitches() {
         let original = UUID()
         let work = UUID()
@@ -140,6 +159,31 @@ final class ModelsTests: XCTestCase {
         draft.discardChanges()
         XCTAssertFalse(draft.isDirty)
         XCTAssertEqual(draft.items, initial)
+    }
+
+    private func centerComponents(
+        of image: NSImage
+    ) -> (red: Double, green: Double, blue: Double, alpha: Double)? {
+        var proposedRect = NSRect(origin: .zero, size: image.size)
+        guard let renderedImage = image.cgImage(
+            forProposedRect: &proposedRect,
+            context: nil,
+            hints: nil
+        ),
+              let data = renderedImage.dataProvider?.data,
+              let bytes = CFDataGetBytePtr(data) else {
+            return nil
+        }
+
+        let x = renderedImage.width / 2
+        let y = renderedImage.height / 2
+        let offset = (y * renderedImage.bytesPerRow) + (x * 4)
+        return (
+            Double(bytes[offset]) / 255,
+            Double(bytes[offset + 1]) / 255,
+            Double(bytes[offset + 2]) / 255,
+            Double(bytes[offset + 3]) / 255
+        )
     }
 
     func testDockLayoutDraftRejectsDuplicateApplications() {

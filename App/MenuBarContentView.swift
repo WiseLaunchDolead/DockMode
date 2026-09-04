@@ -16,8 +16,8 @@ struct MenuBarContentView: View {
                 Label {
                     Text(profile.name)
                 } icon: {
-                    Image(systemName: "square.fill")
-                        .foregroundStyle(Color(profileColor: profile.color))
+                    Image(nsImage: ProfileMenuIconRenderer.image(for: profile.color))
+                        .renderingMode(.original)
                 }
             }
             .disabled(model.isSwitching)

@@ -12,4 +12,5 @@ Initial release:
 - Command-click multi-selection and grouped drag-and-drop for applications and spacers;
 - responsive Dock preview sizing that keeps common layouts fully visible and scrolls only very long Docks;
 - SF Symbol icons for menu-bar actions;
+- profile-color swatches that retain their colors in the native menu-bar menu;
 - local-only storage with no analytics.
