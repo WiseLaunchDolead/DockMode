@@ -9,20 +9,14 @@ struct MenuBarContentView: View {
     let canCheckForUpdates: Bool
 
     var body: some View {
+        Text("Docks")
+
         ForEach(model.profiles) { profile in
-            Button {
-                do {
-                    try model.switchProfile(to: profile.id)
-                } catch {
-                    model.presentError(error)
-                }
-            } label: {
+            Toggle(isOn: profileSelectionBinding(for: profile)) {
                 Label {
                     Text(profile.name)
                 } icon: {
-                    Image(systemName: profile.id == model.document.activeProfileID
-                        ? "checkmark.circle.fill"
-                        : "circle.fill")
+                    Image(systemName: "square.fill")
                         .foregroundStyle(Color(profileColor: profile.color))
                 }
             }
@@ -68,5 +62,21 @@ struct MenuBarContentView: View {
             Label("Quit DockMode", systemImage: "power")
         }
         .keyboardShortcut("q")
+    }
+
+    private func profileSelectionBinding(for profile: Profile) -> Binding<Bool> {
+        Binding(
+            get: { profile.id == model.document.activeProfileID },
+            set: { shouldActivate in
+                guard shouldActivate,
+                      profile.id != model.document.activeProfileID else { return }
+
+                do {
+                    try model.switchProfile(to: profile.id)
+                } catch {
+                    model.presentError(error)
+                }
+            }
+        )
     }
 }

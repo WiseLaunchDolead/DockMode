@@ -31,6 +31,7 @@
 "Launch at login needs approval" = "Le lancement à la connexion doit être autorisé";
 "Delete Profile" = "Supprimer le profil";
 "Finish DockMode Setup…" = "Terminer la configuration de DockMode…";
+"Docks" = "Docks";
 "Some profile applications are unavailable" = "Certaines applications du profil sont indisponibles";
 "New Profile…" = "Nouveau profil…";
 "Manage Profiles…" = "Gérer les profils…";
