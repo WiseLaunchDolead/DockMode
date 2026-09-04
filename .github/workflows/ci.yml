@@ -25,11 +25,15 @@ jobs:
 
       - name: Run unit tests
         run: |
-          xcodebuild test \
-            -project DockMode.xcodeproj \
-            -scheme DockMode \
-            -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO
+          for arch in arm64 x86_64; do
+            xcodebuild test \
+              -project DockMode.xcodeproj \
+              -scheme DockMode \
+              -destination "platform=macOS,arch=$arch" \
+              ARCHS="$arch" \
+              ONLY_ACTIVE_ARCH=YES \
+              CODE_SIGNING_ALLOWED=NO
+          done
 
       - name: Build unsigned universal app
         run: |
