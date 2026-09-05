@@ -149,8 +149,8 @@ jobs:
             --ed-key-file - \
             --maximum-versions 1 \
             --maximum-deltas 0 \
-            --download-url-prefix "https://github.com/Wiselaunch/DockMode/releases/download/$GITHUB_REF_NAME/" \
-            --link "https://github.com/Wiselaunch/DockMode" \
+            --download-url-prefix "https://github.com/WiseLaunchDolead/DockMode/releases/download/$GITHUB_REF_NAME/" \
+            --link "https://github.com/WiseLaunchDolead/DockMode" \
             "$UPDATE_DIR"
 
           mkdir -p pages
