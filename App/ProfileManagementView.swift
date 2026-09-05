@@ -211,6 +211,7 @@ struct ProfileManagementView: View {
 
     @ViewBuilder
     private func actionButtons(profile: Profile) -> some View {
+#if compiler(>=6.2)
         if #available(macOS 26.0, *) {
             GlassEffectContainer(spacing: 10) {
                 actionButtonRow(profile: profile)
@@ -218,6 +219,9 @@ struct ProfileManagementView: View {
         } else {
             actionButtonRow(profile: profile)
         }
+#else
+        actionButtonRow(profile: profile)
+#endif
     }
 
     private func actionButtonRow(profile: Profile) -> some View {
