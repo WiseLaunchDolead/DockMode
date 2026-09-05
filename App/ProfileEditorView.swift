@@ -57,21 +57,30 @@ struct DockPreviewView: View {
     @State private var dragPayload: DockItemDragPayload?
     @State private var dropTarget: DockPreviewDropTarget?
 
+    private var previewItems: [DockItem] {
+        guard let dragPayload, let dropTarget else { return draft.items }
+        return draft.itemsPreviewingMove(
+            ids: dragPayload.itemIDs,
+            to: dropTarget.insertionTarget
+        )
+    }
+
     var body: some View {
         GeometryReader { proxy in
+            let items = previewItems
             let metrics = DockPreviewLayoutCalculator.metrics(
-                for: draft.items,
+                for: items,
                 availableWidth: Double(proxy.size.width)
             )
             let iconSize = CGFloat(metrics.iconSize)
 
             ScrollView(.horizontal, showsIndicators: !metrics.fitsWithoutScrolling) {
                 HStack(spacing: max(5, iconSize * 0.10)) {
-                    ForEach(Array(draft.items.enumerated()), id: \.element.id) { index, item in
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         DockPreviewItemView(
                             item: item,
                             index: index,
-                            totalCount: draft.items.count,
+                            totalCount: items.count,
                             iconSize: iconSize,
                             tint: tint,
                             draft: $draft,
@@ -83,13 +92,13 @@ struct DockPreviewView: View {
 
                     DockPreviewEndDropTarget(
                         iconSize: iconSize,
-                        tint: tint,
                         draft: $draft,
                         selectedItemIDs: $selectedItemIDs,
                         dragPayload: $dragPayload,
                         dropTarget: $dropTarget
                     )
                 }
+                .animation(.snappy(duration: 0.18, extraBounce: 0.08), value: items.map(\.id))
                 .padding(.horizontal, 18)
                 .padding(.vertical, 14)
                 .frame(minWidth: min(proxy.size.width - 32, 260))
@@ -134,15 +143,7 @@ private struct DockPreviewItemView: View {
             .padding(.horizontal, 4)
             .background(selectionBackground)
             .overlay(selectionOutline)
-            .overlay(alignment: insertionAlignment) {
-                if isInsertionTarget {
-                    Capsule()
-                        .fill(tint)
-                        .frame(width: 3, height: iconSize + 16)
-                        .shadow(color: tint.opacity(0.55), radius: 3)
-                        .offset(x: insertionOffset)
-                }
-            }
+            .opacity(isLiftedForDrag ? 0 : 1)
             .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .onTapGesture {
                 updateSelection(commandPressed: NSEvent.modifierFlags.contains(.command))
@@ -270,16 +271,9 @@ private struct DockPreviewItemView: View {
         isSelected ? selectedItemIDs : [item.id]
     }
 
-    private var isInsertionTarget: Bool {
-        dropTarget == .before(item.id) || dropTarget == .after(item.id)
-    }
-
-    private var insertionAlignment: Alignment {
-        dropTarget == .before(item.id) ? .leading : .trailing
-    }
-
-    private var insertionOffset: CGFloat {
-        dropTarget == .before(item.id) ? -3 : 3
+    private var isLiftedForDrag: Bool {
+        guard dropTarget != nil, let dragPayload else { return false }
+        return dragPayload.itemIDs.contains(item.id)
     }
 
     private func beginDrag() -> NSItemProvider {
@@ -385,8 +379,8 @@ private struct DockDragPreview: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             previewContent
-                .padding(7)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                .scaleEffect(1.06)
+                .shadow(color: .black.opacity(0.25), radius: 8, y: 5)
 
             if count > 1 {
                 Text("\(count)")
@@ -431,7 +425,6 @@ private struct DockDragPreview: View {
 
 private struct DockPreviewEndDropTarget: View {
     let iconSize: CGFloat
-    let tint: Color
     @Binding var draft: DockLayoutDraft
     @Binding var selectedItemIDs: Set<UUID>
     @Binding var dragPayload: DockItemDragPayload?
@@ -441,14 +434,6 @@ private struct DockPreviewEndDropTarget: View {
         Color.clear
             .frame(width: 20, height: iconSize + 18)
             .contentShape(Rectangle())
-            .overlay(alignment: .leading) {
-                if dropTarget == .end {
-                    Capsule()
-                        .fill(tint)
-                        .frame(width: 3, height: iconSize + 16)
-                        .shadow(color: tint.opacity(0.55), radius: 3)
-                }
-            }
             .onDrop(
                 of: [UTType.dockModeItems],
                 delegate: DockPreviewEndDropDelegate(
@@ -487,7 +472,7 @@ private struct DockPreviewItemDropDelegate: DropDelegate {
 
     func performDrop(info: DropInfo) -> Bool {
         guard let dragPayload else { return false }
-        let target = target(for: info)
+        let target = dropTarget ?? target(for: info)
         withAnimation(.snappy) {
             _ = draft.move(ids: dragPayload.itemIDs, to: target.insertionTarget)
         }
@@ -501,7 +486,9 @@ private struct DockPreviewItemDropDelegate: DropDelegate {
         guard dragPayload != nil else { return }
         let target = target(for: info)
         if dropTarget != target {
-            dropTarget = target
+            withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
+                dropTarget = target
+            }
         }
     }
 
@@ -518,12 +505,14 @@ private struct DockPreviewEndDropDelegate: DropDelegate {
 
     func dropEntered(info: DropInfo) {
         if dragPayload != nil {
-            dropTarget = .end
+            withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
+                dropTarget = .end
+            }
         }
     }
 
     func dropUpdated(info: DropInfo) -> DropProposal? {
-        if dragPayload != nil {
+        if dragPayload != nil, dropTarget != .end {
             dropTarget = .end
         }
         return DropProposal(operation: .move)

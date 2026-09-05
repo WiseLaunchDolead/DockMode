@@ -165,6 +165,12 @@ public struct DockLayoutDraft: Equatable, Sendable {
         return true
     }
 
+    public func itemsPreviewingMove(ids: [UUID], to target: DockInsertionTarget) -> [DockItem] {
+        var preview = self
+        _ = preview.move(ids: ids, to: target)
+        return preview.items
+    }
+
     @discardableResult
     public mutating func replace(id: UUID, with content: DockItemContent) -> Bool {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return false }

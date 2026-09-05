@@ -308,6 +308,27 @@ final class ModelsTests: XCTestCase {
         XCTAssertEqual(draft.items.map(\.id), [first.id, regular.id, compact.id, second.id])
     }
 
+    func testDockLayoutDraftPreviewsMoveWithoutMutatingTheDraft() {
+        let first = DockItem.application(mail)
+        let compact = DockItem.spacer(.compact)
+        let second = DockItem.application(calendar)
+        var draft = DockLayoutDraft(savedItems: [first, compact, second])
+        draft.addSpacer(.regular)
+        let itemsBeforePreview = draft.items
+
+        let previewItems = draft.itemsPreviewingMove(
+            ids: [first.id, compact.id],
+            to: .end
+        )
+
+        XCTAssertEqual(
+            previewItems.map(\.id),
+            [second.id, itemsBeforePreview[3].id, first.id, compact.id]
+        )
+        XCTAssertEqual(draft.items, itemsBeforePreview)
+        XCTAssertTrue(draft.isDirty)
+    }
+
     func testDockLayoutDraftMovesNonContiguousSelectionAndPreservesLayoutOrder() {
         let first = DockItem.application(mail)
         let compact = DockItem.spacer(.compact)
