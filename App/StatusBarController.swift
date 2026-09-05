@@ -29,8 +29,9 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         menu.delegate = self
         menu.autoenablesItems = false
         statusItem.menu = menu
-        statusItem.button?.image = symbol(named: "rectangle.3.group")
+        statusItem.button?.image = StatusBarIconRenderer.image()
         statusItem.button?.imagePosition = .imageOnly
+        statusItem.button?.imageScaling = .scaleNone
         statusItem.isVisible = true
         rebuildMenu()
 

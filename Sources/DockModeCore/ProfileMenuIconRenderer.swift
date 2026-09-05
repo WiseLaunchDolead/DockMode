@@ -62,3 +62,52 @@ public enum ProfileMenuIconRenderer {
         return image
     }
 }
+
+public enum StatusBarIconRenderer {
+    public static let iconSize = NSSize(width: 18, height: 18)
+    private static let opticalVerticalOffset: CGFloat = 0.5
+
+    public static func image() -> NSImage {
+        let configuration = NSImage.SymbolConfiguration(pointSize: 15, weight: .regular)
+        guard let symbol = NSImage(
+            systemSymbolName: "rectangle.3.group",
+            accessibilityDescription: nil
+        )?.withSymbolConfiguration(configuration) else {
+            return configuredImage(NSImage(size: iconSize))
+        }
+
+        let image = NSImage(size: iconSize, flipped: false) { bounds in
+            let scale = min(
+                bounds.width / symbol.size.width,
+                bounds.height / symbol.size.height
+            )
+            let renderedSize = NSSize(
+                width: symbol.size.width * scale,
+                height: symbol.size.height * scale
+            )
+            let renderedRect = NSRect(
+                x: bounds.midX - (renderedSize.width / 2),
+                y: bounds.midY - (renderedSize.height / 2) + opticalVerticalOffset,
+                width: renderedSize.width,
+                height: renderedSize.height
+            )
+            symbol.draw(
+                in: renderedRect,
+                from: .zero,
+                operation: .sourceOver,
+                fraction: 1,
+                respectFlipped: true,
+                hints: [.interpolation: NSImageInterpolation.high]
+            )
+            return true
+        }
+
+        return configuredImage(image)
+    }
+
+    private static func configuredImage(_ image: NSImage) -> NSImage {
+        image.alignmentRect = NSRect(origin: .zero, size: iconSize)
+        image.isTemplate = true
+        return image
+    }
+}

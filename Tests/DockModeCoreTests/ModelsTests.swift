@@ -94,6 +94,17 @@ final class ModelsTests: XCTestCase {
         }
     }
 
+    func testStatusBarIconUsesAFullCenteredCanvas() throws {
+        let image = StatusBarIconRenderer.image()
+
+        XCTAssertEqual(image.size, StatusBarIconRenderer.iconSize)
+        XCTAssertEqual(
+            image.alignmentRect,
+            NSRect(origin: .zero, size: StatusBarIconRenderer.iconSize)
+        )
+        XCTAssertTrue(image.isTemplate)
+    }
+
     func testDockEditorWindowDoesNotStealPreviewDragGestures() async {
         await MainActor.run {
             let window = NSWindow(
