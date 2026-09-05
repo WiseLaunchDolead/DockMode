@@ -102,7 +102,11 @@ struct DockPreviewView: View {
                 .frame(minWidth: min(proxy.size.width - 32, 260))
                 .dockModeGlassSurface(tint: tint.opacity(0.18), cornerRadius: 24)
                 .padding(.horizontal, 16)
-                .frame(minWidth: proxy.size.width)
+                .frame(
+                    minWidth: proxy.size.width,
+                    minHeight: proxy.size.height,
+                    alignment: .center
+                )
             }
             .onPreferenceChange(DockItemFramePreferenceKey.self) { itemFrames = $0 }
             .overlay {

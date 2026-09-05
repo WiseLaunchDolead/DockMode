@@ -25,6 +25,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         super.init()
 
+        statusItem.autosaveName = "fr.wiselaunch.DockMode.StatusItem"
         menu.delegate = self
         menu.autoenablesItems = false
         statusItem.menu = menu

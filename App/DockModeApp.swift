@@ -41,6 +41,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    func applicationShouldHandleReopen(
+        _ sender: NSApplication,
+        hasVisibleWindows flag: Bool
+    ) -> Bool {
+        if !flag {
+            showManager(createNewProfile: false)
+        }
+        return true
+    }
+
     func showManager(createNewProfile: Bool) {
         if managerWindowController == nil {
             let rootView = ProfileManagementView(model: model)
