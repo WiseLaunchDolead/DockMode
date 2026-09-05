@@ -64,7 +64,7 @@ public enum ProfileMenuIconRenderer {
 }
 
 public enum StatusBarIconRenderer {
-    public static let iconSize = NSSize(width: 18, height: 18)
+    public static let iconSize = NSSize(width: 20, height: 20)
     private static let opticalVerticalOffset: CGFloat = 0.5
 
     public static func image() -> NSImage {

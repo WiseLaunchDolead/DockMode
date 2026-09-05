@@ -102,6 +102,7 @@ final class ModelsTests: XCTestCase {
             image.alignmentRect,
             NSRect(origin: .zero, size: StatusBarIconRenderer.iconSize)
         )
+        XCTAssertGreaterThanOrEqual(image.size.width, 20)
         XCTAssertTrue(image.isTemplate)
     }
 
