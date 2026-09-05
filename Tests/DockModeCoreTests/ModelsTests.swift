@@ -94,6 +94,23 @@ final class ModelsTests: XCTestCase {
         }
     }
 
+    func testDockEditorWindowDoesNotStealPreviewDragGestures() async {
+        await MainActor.run {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 900, height: 420),
+                styleMask: [.titled, .fullSizeContentView],
+                backing: .buffered,
+                defer: false
+            )
+            window.isMovableByWindowBackground = true
+
+            DockEditorWindowInteraction.configure(window)
+
+            XCTAssertFalse(window.isMovableByWindowBackground)
+            XCTAssertTrue(window.styleMask.contains(.titled))
+        }
+    }
+
     func testFocusTransitionsPreserveTheOriginalProfileAcrossDirectSwitches() {
         let original = UUID()
         let work = UUID()

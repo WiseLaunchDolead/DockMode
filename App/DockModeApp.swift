@@ -1,4 +1,5 @@
 import AppKit
+import DockModeCore
 import SwiftUI
 
 @main
@@ -60,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             window.toolbarStyle = .unifiedCompact
             window.isOpaque = false
             window.backgroundColor = .clear
-            window.isMovableByWindowBackground = true
+            DockEditorWindowInteraction.configure(window)
             window.minSize = NSSize(width: 720, height: 360)
             window.center()
             window.isReleasedWhenClosed = false
