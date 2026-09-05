@@ -800,12 +800,25 @@ private struct AdaptiveGlassSurface: ViewModifier {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .stroke(.primary.opacity(colorSchemeContrast == .increased ? 0.42 : 0.16), lineWidth: 1)
                 }
-        } else if #available(macOS 26.0, *) {
-            content.glassEffect(
-                .regular.tint(tint),
-                in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            )
         } else {
+#if compiler(>=6.2)
+            if #available(macOS 26.0, *) {
+                content.glassEffect(
+                    .regular.tint(tint),
+                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                )
+            } else {
+                content
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .stroke(
+                                .primary.opacity(colorSchemeContrast == .increased ? 0.38 : 0.12),
+                                lineWidth: 1
+                            )
+                    }
+            }
+#else
             content
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                 .overlay {
@@ -815,6 +828,7 @@ private struct AdaptiveGlassSurface: ViewModifier {
                             lineWidth: 1
                         )
                 }
+#endif
         }
     }
 }
@@ -830,6 +844,7 @@ private struct AdaptiveGlassButton: ViewModifier {
 
     @ViewBuilder
     func body(content: Content) -> some View {
+#if compiler(>=6.2)
         if #available(macOS 26.0, *) {
             switch emphasis {
             case .standard: content.buttonStyle(.glass)
@@ -841,6 +856,12 @@ private struct AdaptiveGlassButton: ViewModifier {
             case .prominent: content.buttonStyle(.borderedProminent).tint(tint)
             }
         }
+#else
+        switch emphasis {
+        case .standard: content.buttonStyle(.bordered)
+        case .prominent: content.buttonStyle(.borderedProminent).tint(tint)
+        }
+#endif
     }
 }
 
