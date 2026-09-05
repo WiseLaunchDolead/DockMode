@@ -33,6 +33,7 @@
 		E865EDB641CCA727C5B03F83 /* DockModeFocusExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC7AEE40C19A41F2B946597 /* DockModeFocusExtension.swift */; };
 		F4C8FFB1C727C61A52B66DC0 /* FocusRequestObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276F95A924FC0996A4C5D15D /* FocusRequestObserver.swift */; };
 		FDD2FD0BDC560BC922966734 /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442FEF5F12038D57619F1B7F /* UpdaterController.swift */; };
+		FEA50D74F1C74B0DAA487264 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A65E20C4154DD4A53DDF86 /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		DE1C594950C6A32387030AD0 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		DE48FAD5D51ED1F73FC66498 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA3C2D64BE7B2139853D78BC /* ProfileColor+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileColor+SwiftUI.swift"; sourceTree = "<group>"; };
+		E7A65E20C4154DD4A53DDF86 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		ED87B6A00D613F1DA46DF085 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F1BD82932C66DA369B596324 /* ProfileManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManagementView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -186,6 +188,7 @@
 				EA3C2D64BE7B2139853D78BC /* ProfileColor+SwiftUI.swift */,
 				0974E20C3A0C0EF54B3C1BB5 /* ProfileEditorView.swift */,
 				F1BD82932C66DA369B596324 /* ProfileManagementView.swift */,
+				E7A65E20C4154DD4A53DDF86 /* StatusBarController.swift */,
 				442FEF5F12038D57619F1B7F /* UpdaterController.swift */,
 			);
 			path = App;
@@ -393,6 +396,7 @@
 				549C5155D5FF743365A23717 /* ProfileColor+SwiftUI.swift in Sources */,
 				938CEA3531CEDE0C8EFB78E2 /* ProfileEditorView.swift in Sources */,
 				A6845954608F3BB56CE18AF1 /* ProfileManagementView.swift in Sources */,
+				FEA50D74F1C74B0DAA487264 /* StatusBarController.swift in Sources */,
 				FDD2FD0BDC560BC922966734 /* UpdaterController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

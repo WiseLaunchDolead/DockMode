@@ -3,32 +3,14 @@ import DockModeCore
 import SwiftUI
 
 @main
-struct DockModeApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-
-    var body: some Scene {
-        MenuBarExtra(isInserted: .constant(true)) {
-            MenuBarContentView(
-                model: appDelegate.model,
-                showManager: { newProfile in
-                    appDelegate.showManager(createNewProfile: newProfile)
-                },
-                checkForUpdates: { appDelegate.updater.checkForUpdates() },
-                canCheckForUpdates: appDelegate.updater.canCheckForUpdates
-            )
-        } label: {
-            Image(systemName: "rectangle.3.group")
-                .accessibilityLabel(accessibilityLabel)
-        }
-        .menuBarExtraStyle(.menu)
-    }
-
-    private var accessibilityLabel: Text {
-        if let profileName = appDelegate.model.activeProfile?.name {
-            Text("DockMode, active profile: \(profileName)")
-        } else {
-            Text("DockMode")
-        }
+@MainActor
+enum DockModeApp {
+    static func main() {
+        let application = NSApplication.shared
+        let delegate = AppDelegate()
+        application.delegate = delegate
+        application.run()
+        withExtendedLifetime(delegate) {}
     }
 }
 
@@ -37,10 +19,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let model = AppModel()
     let updater = UpdaterController()
     private var managerWindowController: NSWindowController?
+    private var statusBarController: StatusBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.accessory)
         model.start()
+        statusBarController = StatusBarController(
+            model: model,
+            showManager: { [weak self] createNewProfile in
+                self?.showManager(createNewProfile: createNewProfile)
+            },
+            checkForUpdates: { [weak self] in
+                self?.updater.checkForUpdates()
+            },
+            canCheckForUpdates: { [weak self] in
+                self?.updater.canCheckForUpdates ?? false
+            }
+        )
         if model.needsOnboarding {
             showManager(createNewProfile: false)
         }
