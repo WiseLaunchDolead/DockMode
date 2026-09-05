@@ -7,7 +7,7 @@ struct DockModeApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra {
+        MenuBarExtra(isInserted: .constant(true)) {
             MenuBarContentView(
                 model: appDelegate.model,
                 showManager: { newProfile in
