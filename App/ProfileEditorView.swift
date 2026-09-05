@@ -1,7 +1,6 @@
 import AppKit
 import DockModeCore
 import SwiftUI
-import UniformTypeIdentifiers
 
 extension ApplicationReference {
     var resolvedInstalledURL: URL? {
@@ -14,38 +13,30 @@ extension ApplicationReference {
     }
 }
 
-private extension UTType {
-    static let dockModeItems = UTType(exportedAs: "fr.wiselaunch.DockMode.dock-items")
-}
+private let dockPreviewCoordinateSpace = "DockModeDockPreview"
 
-private struct DockItemDragPayload: Codable, Equatable {
+private struct DockPreviewDragState: Equatable {
     let itemIDs: [UUID]
-
-    func itemProvider() -> NSItemProvider {
-        let provider = NSItemProvider()
-        let data = try? JSONEncoder().encode(self)
-        provider.registerDataRepresentation(
-            forTypeIdentifier: UTType.dockModeItems.identifier,
-            visibility: .ownProcess
-        ) { completion in
-            completion(data, nil)
-            return nil
-        }
-        return provider
-    }
+    let primaryItemID: UUID
 }
 
 private enum DockPreviewDropTarget: Equatable {
     case before(UUID)
-    case after(UUID)
     case end
 
     var insertionTarget: DockInsertionTarget {
         switch self {
         case let .before(id): .before(id)
-        case let .after(id): .after(id)
         case .end: .end
         }
+    }
+}
+
+private struct DockItemFramePreferenceKey: PreferenceKey {
+    static let defaultValue: [UUID: CGRect] = [:]
+
+    static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, next in next })
     }
 }
 
@@ -54,13 +45,15 @@ struct DockPreviewView: View {
     @Binding var selectedItemIDs: Set<UUID>
     let tint: Color
 
-    @State private var dragPayload: DockItemDragPayload?
+    @State private var dragState: DockPreviewDragState?
     @State private var dropTarget: DockPreviewDropTarget?
+    @State private var dragLocation: CGPoint?
+    @State private var itemFrames: [UUID: CGRect] = [:]
 
     private var previewItems: [DockItem] {
-        guard let dragPayload, let dropTarget else { return draft.items }
+        guard let dragState, let dropTarget else { return draft.items }
         return draft.itemsPreviewingMove(
-            ids: dragPayload.itemIDs,
+            ids: dragState.itemIDs,
             to: dropTarget.insertionTarget
         )
     }
@@ -85,18 +78,23 @@ struct DockPreviewView: View {
                             tint: tint,
                             draft: $draft,
                             selectedItemIDs: $selectedItemIDs,
-                            dragPayload: $dragPayload,
-                            dropTarget: $dropTarget
+                            isLiftedForDrag: dragState?.itemIDs.contains(item.id) == true,
+                            onDragChanged: { value in
+                                updateDrag(
+                                    item: item,
+                                    value: value,
+                                    previewSize: proxy.size
+                                )
+                            },
+                            onDragEnded: { value in
+                                finishDrag(value: value, previewSize: proxy.size)
+                            }
                         )
                     }
 
-                    DockPreviewEndDropTarget(
-                        iconSize: iconSize,
-                        draft: $draft,
-                        selectedItemIDs: $selectedItemIDs,
-                        dragPayload: $dragPayload,
-                        dropTarget: $dropTarget
-                    )
+                    Color.clear
+                        .frame(width: 20, height: iconSize + 18)
+                        .accessibilityHidden(true)
                 }
                 .animation(.snappy(duration: 0.18, extraBounce: 0.08), value: items.map(\.id))
                 .padding(.horizontal, 18)
@@ -106,6 +104,7 @@ struct DockPreviewView: View {
                 .padding(.horizontal, 16)
                 .frame(minWidth: proxy.size.width)
             }
+            .onPreferenceChange(DockItemFramePreferenceKey.self) { itemFrames = $0 }
             .overlay {
                 if draft.items.isEmpty {
                     ContentUnavailableView(
@@ -115,10 +114,90 @@ struct DockPreviewView: View {
                     )
                 }
             }
+            .overlay(alignment: .topLeading) {
+                if let dragState,
+                   let dragLocation,
+                   let primaryItem = draft.items.first(where: { $0.id == dragState.primaryItemID }) {
+                    DockDragPreview(
+                        item: primaryItem,
+                        count: dragState.itemIDs.count,
+                        iconSize: iconSize
+                    )
+                    .position(dragLocation)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+                }
+            }
         }
+        .coordinateSpace(name: dockPreviewCoordinateSpace)
         .frame(height: 126)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Dock Preview")
+    }
+
+    private func updateDrag(
+        item: DockItem,
+        value: DragGesture.Value,
+        previewSize: CGSize
+    ) {
+        if dragState == nil {
+            let ids: [UUID]
+            if selectedItemIDs.contains(item.id) {
+                ids = draft.items.map(\.id).filter(selectedItemIDs.contains)
+            } else {
+                ids = [item.id]
+                selectedItemIDs = [item.id]
+            }
+            dragState = DockPreviewDragState(itemIDs: ids, primaryItemID: item.id)
+        }
+
+        guard let dragState else { return }
+        dragLocation = value.location
+        let newTarget = insertionTarget(
+            at: value.location,
+            movingIDs: Set(dragState.itemIDs),
+            previewSize: previewSize
+        )
+        guard newTarget != dropTarget else { return }
+        withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
+            dropTarget = newTarget
+        }
+    }
+
+    private func finishDrag(value: DragGesture.Value, previewSize: CGSize) {
+        guard let dragState else { return }
+        let finalTarget = insertionTarget(
+            at: value.location,
+            movingIDs: Set(dragState.itemIDs),
+            previewSize: previewSize
+        )
+
+        if let finalTarget {
+            withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
+                _ = draft.move(ids: dragState.itemIDs, to: finalTarget.insertionTarget)
+            }
+        }
+
+        selectedItemIDs.formIntersection(Set(draft.items.map(\.id)))
+        self.dragState = nil
+        dropTarget = nil
+        dragLocation = nil
+    }
+
+    private func insertionTarget(
+        at location: CGPoint,
+        movingIDs: Set<UUID>,
+        previewSize: CGSize
+    ) -> DockPreviewDropTarget? {
+        guard CGRect(origin: .zero, size: previewSize).contains(location) else { return nil }
+
+        for item in previewItems where !movingIDs.contains(item.id) {
+            guard let frame = itemFrames[item.id] else { continue }
+            if location.x < frame.midX {
+                return .before(item.id)
+            }
+        }
+        return .end
     }
 }
 
@@ -130,8 +209,9 @@ private struct DockPreviewItemView: View {
     let tint: Color
     @Binding var draft: DockLayoutDraft
     @Binding var selectedItemIDs: Set<UUID>
-    @Binding var dragPayload: DockItemDragPayload?
-    @Binding var dropTarget: DockPreviewDropTarget?
+    let isLiftedForDrag: Bool
+    let onDragChanged: (DragGesture.Value) -> Void
+    let onDragEnded: (DragGesture.Value) -> Void
 
     private var isSelected: Bool {
         selectedItemIDs.contains(item.id)
@@ -148,22 +228,22 @@ private struct DockPreviewItemView: View {
             .onTapGesture {
                 updateSelection(commandPressed: NSEvent.modifierFlags.contains(.command))
             }
-            .onDrag {
-                beginDrag()
-            } preview: {
-                DockDragPreview(item: item, count: dragItemIDs.count, iconSize: iconSize)
-            }
-            .onDrop(
-                of: [UTType.dockModeItems],
-                delegate: DockPreviewItemDropDelegate(
-                    destinationID: item.id,
-                    width: dropHitWidth,
-                    draft: $draft,
-                    selectedItemIDs: $selectedItemIDs,
-                    dragPayload: $dragPayload,
-                    dropTarget: $dropTarget
+            .highPriorityGesture(
+                DragGesture(
+                    minimumDistance: 4,
+                    coordinateSpace: .named(dockPreviewCoordinateSpace)
                 )
+                .onChanged(onDragChanged)
+                .onEnded(onDragEnded)
             )
+            .background {
+                GeometryReader { proxy in
+                    Color.clear.preference(
+                        key: DockItemFramePreferenceKey.self,
+                        value: [item.id: proxy.frame(in: .named(dockPreviewCoordinateSpace))]
+                    )
+                }
+            }
             .contextMenu {
                 Button("Move Left", systemImage: "arrow.left") {
                     withAnimation(.snappy) {
@@ -244,47 +324,8 @@ private struct DockPreviewItemView: View {
             .stroke(isSelected ? tint.opacity(0.95) : .clear, lineWidth: 2)
     }
 
-    private var dragItemIDs: [UUID] {
-        if isSelected {
-            return draft.items.map(\.id).filter(selectedItemIDs.contains)
-        }
-        return [item.id]
-    }
-
-    private var dropHitWidth: CGFloat {
-        let minimumWidth = max(30, iconSize * 0.52)
-        let contentWidth: CGFloat
-        switch item.content {
-        case .application:
-            contentWidth = iconSize
-        case .spacer(.compact):
-            contentWidth = max(12, iconSize * 0.28)
-        case .spacer(.regular):
-            contentWidth = max(24, iconSize * 0.55)
-        case .spacer(.flexible):
-            contentWidth = max(44, iconSize * 0.9)
-        }
-        return max(minimumWidth, contentWidth) + 8
-    }
-
     private var effectiveSelection: Set<UUID> {
         isSelected ? selectedItemIDs : [item.id]
-    }
-
-    private var isLiftedForDrag: Bool {
-        guard dropTarget != nil, let dragPayload else { return false }
-        return dragPayload.itemIDs.contains(item.id)
-    }
-
-    private func beginDrag() -> NSItemProvider {
-        let ids = dragItemIDs
-        if !isSelected {
-            selectedItemIDs = [item.id]
-        }
-        let payload = DockItemDragPayload(itemIDs: ids)
-        dragPayload = payload
-        dropTarget = nil
-        return payload.itemProvider()
     }
 
     private func updateSelection(commandPressed: Bool) {
@@ -420,119 +461,6 @@ private struct DockDragPreview: View {
         case let .spacer(kind):
             SpacerPreview(kind: kind, iconSize: min(48, iconSize))
         }
-    }
-}
-
-private struct DockPreviewEndDropTarget: View {
-    let iconSize: CGFloat
-    @Binding var draft: DockLayoutDraft
-    @Binding var selectedItemIDs: Set<UUID>
-    @Binding var dragPayload: DockItemDragPayload?
-    @Binding var dropTarget: DockPreviewDropTarget?
-
-    var body: some View {
-        Color.clear
-            .frame(width: 20, height: iconSize + 18)
-            .contentShape(Rectangle())
-            .onDrop(
-                of: [UTType.dockModeItems],
-                delegate: DockPreviewEndDropDelegate(
-                    draft: $draft,
-                    selectedItemIDs: $selectedItemIDs,
-                    dragPayload: $dragPayload,
-                    dropTarget: $dropTarget
-                )
-            )
-            .accessibilityHidden(true)
-    }
-}
-
-private struct DockPreviewItemDropDelegate: DropDelegate {
-    let destinationID: UUID
-    let width: CGFloat
-    @Binding var draft: DockLayoutDraft
-    @Binding var selectedItemIDs: Set<UUID>
-    @Binding var dragPayload: DockItemDragPayload?
-    @Binding var dropTarget: DockPreviewDropTarget?
-
-    func dropEntered(info: DropInfo) {
-        updateTarget(for: info)
-    }
-
-    func dropUpdated(info: DropInfo) -> DropProposal? {
-        updateTarget(for: info)
-        return DropProposal(operation: .move)
-    }
-
-    func dropExited(info: DropInfo) {
-        if dropTarget == .before(destinationID) || dropTarget == .after(destinationID) {
-            dropTarget = nil
-        }
-    }
-
-    func performDrop(info: DropInfo) -> Bool {
-        guard let dragPayload else { return false }
-        let target = dropTarget ?? target(for: info)
-        withAnimation(.snappy) {
-            _ = draft.move(ids: dragPayload.itemIDs, to: target.insertionTarget)
-        }
-        selectedItemIDs.formIntersection(Set(draft.items.map(\.id)))
-        self.dragPayload = nil
-        dropTarget = nil
-        return true
-    }
-
-    private func updateTarget(for info: DropInfo) {
-        guard dragPayload != nil else { return }
-        let target = target(for: info)
-        if dropTarget != target {
-            withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
-                dropTarget = target
-            }
-        }
-    }
-
-    private func target(for info: DropInfo) -> DockPreviewDropTarget {
-        info.location.x < width / 2 ? .before(destinationID) : .after(destinationID)
-    }
-}
-
-private struct DockPreviewEndDropDelegate: DropDelegate {
-    @Binding var draft: DockLayoutDraft
-    @Binding var selectedItemIDs: Set<UUID>
-    @Binding var dragPayload: DockItemDragPayload?
-    @Binding var dropTarget: DockPreviewDropTarget?
-
-    func dropEntered(info: DropInfo) {
-        if dragPayload != nil {
-            withAnimation(.snappy(duration: 0.18, extraBounce: 0.08)) {
-                dropTarget = .end
-            }
-        }
-    }
-
-    func dropUpdated(info: DropInfo) -> DropProposal? {
-        if dragPayload != nil, dropTarget != .end {
-            dropTarget = .end
-        }
-        return DropProposal(operation: .move)
-    }
-
-    func dropExited(info: DropInfo) {
-        if dropTarget == .end {
-            dropTarget = nil
-        }
-    }
-
-    func performDrop(info: DropInfo) -> Bool {
-        guard let dragPayload else { return false }
-        withAnimation(.snappy) {
-            _ = draft.move(ids: dragPayload.itemIDs, to: .end)
-        }
-        selectedItemIDs.formIntersection(Set(draft.items.map(\.id)))
-        self.dragPayload = nil
-        dropTarget = nil
-        return true
     }
 }
 
