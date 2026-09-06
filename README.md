@@ -17,7 +17,7 @@ It changes the real macOS Dock. It never launches, quits, hides, or blocks appli
 - Manual one-day `OSLog` export with home-directory paths redacted.
 - French and English interface.
 - Manual, redacted export of DockMode-only unified logs.
-- Sparkle updates from signed and notarized GitHub releases.
+- Direct distribution from GitHub Releases. The supported public build does not require an Apple Developer account; updates are downloaded and installed manually.
 
 ## How profile switching behaves
 
@@ -80,7 +80,7 @@ ditto "build/DerivedData/Build/Products/Release/DockMode.app" build/Release/Dock
 scripts/create-dmg.sh build/Release/DockMode.app build/DockMode-local.dmg
 ```
 
-Open `build/DockMode-local.dmg`, drag DockMode to **Applications**, then use **Open** from the Finder context menu if macOS warns that the development build is not signed. A public release must be signed and notarized with the Developer ID credentials described below.
+Open `build/DockMode-local.dmg`, drag DockMode to **Applications**, then use **Open** from the Finder context menu if macOS warns that the development build is not signed. This is also the distribution path used when no Apple Developer account is available. On the first launch, macOS may require the user to approve the app in Finder or **System Settings → Privacy & Security**.
 
 ### Project structure
 
@@ -90,7 +90,7 @@ Open `build/DockMode-local.dmg`, drag DockMode to **Applications**, then use **O
 - `Tests`: Xcode unit tests that never target the real `com.apple.dock` domain.
 - `Design`: source SVG for the original DockMode icon.
 
-## Signing and releases
+## Distribution and releases (without an Apple Developer account)
 
 DockMode uses these identifiers:
 
@@ -98,24 +98,16 @@ DockMode uses these identifiers:
 - Focus extension: `fr.wiselaunch.DockMode.FocusExtension`
 - App Group: `group.fr.wiselaunch.DockMode`
 
-Public releases require Apple Developer ID certificates and two Developer ID provisioning profiles with the App Group capability. Configure the following GitHub Actions secrets:
+The current release model is deliberately independent of the Apple Developer Program:
 
-- `DEVELOPER_ID_P12_BASE64`
-- `DEVELOPER_ID_P12_PASSWORD`
-- `APPLE_TEAM_ID`
-- `APP_PROVISIONING_PROFILE_BASE64`
-- `FOCUS_PROVISIONING_PROFILE_BASE64`
-- `APP_PROVISIONING_PROFILE_NAME`
-- `FOCUS_PROVISIONING_PROFILE_NAME`
-- `APP_STORE_CONNECT_KEY_BASE64`
-- `APP_STORE_CONNECT_KEY_ID`
-- `APP_STORE_CONNECT_ISSUER_ID`
-- `SPARKLE_PUBLIC_KEY`
-- `SPARKLE_PRIVATE_KEY`
+1. Update `MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`, and `RELEASE_NOTES.md`.
+2. Build the universal application and create a DMG with the commands in [Local installation (unsigned development build)](#local-installation-unsigned-development-build).
+3. Create a GitHub Release and attach the new `DockMode-<version>.dmg` file.
+4. Tell existing users to download that DMG, replace DockMode in **Applications**, and approve the launch again if macOS displays a security warning.
 
-Pushing a `vX.Y.Z` tag builds a universal archive, signs it, notarizes the DMG, generates a signed Sparkle appcast, creates the GitHub Release, and deploys the appcast to GitHub Pages.
+Each release therefore needs a new DMG (or another archive containing the app), but it does not need to be submitted to the Mac App Store or signed with a paid Apple account. GitHub hosts the file; it does not sign the application on Apple’s behalf.
 
-Before tagging, update `MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`, and `RELEASE_NOTES.md`.
+The repository also contains `.github/workflows/release.yml` as an optional template for a future Developer ID/notarized pipeline. It is not required for the no-account workflow described above. The current supported update path is manual DMG replacement; the Sparkle updater remains optional and must not be presented as a silent, Gatekeeper-free update mechanism for unsigned builds.
 
 ## Privacy
 
@@ -124,6 +116,8 @@ Profiles and Focus activation requests stay in the local App Group container. Do
 ## Français
 
 DockMode permet de créer plusieurs profils de Dock nommés et colorés. Chaque profil mémorise uniquement les applications épinglées, leur ordre et les séparateurs. Les dossiers, applications récentes et autres réglages restent intacts. Les applications ouvertes ne sont jamais lancées ni fermées lors d'un changement de profil.
+
+La distribution publique actuelle ne dépend pas d'un compte Apple Developer payant. Chaque version est publiée manuellement comme DMG dans une GitHub Release ; les utilisateurs remplacent l'application installée et peuvent devoir l'autoriser une première fois dans le Finder ou dans **Réglages Système → Confidentialité et sécurité**. Le dépôt conserve un workflow optionnel pour une future distribution signée, mais ce workflow n'est pas nécessaire pour publier les versions sans compte Apple.
 
 ## License
 
