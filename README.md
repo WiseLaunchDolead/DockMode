@@ -98,16 +98,22 @@ DockMode uses these identifiers:
 - Focus extension: `fr.wiselaunch.DockMode.FocusExtension`
 - App Group: `group.fr.wiselaunch.DockMode`
 
-The current release model is deliberately independent of the Apple Developer Program:
+The current release model is deliberately independent of the Apple Developer Program. The release workflow does not require Apple credentials:
 
 1. Update `MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`, and `RELEASE_NOTES.md`.
-2. Build the universal application and create a DMG with the commands in [Local installation (unsigned development build)](#local-installation-unsigned-development-build).
-3. Create a GitHub Release and attach the new `DockMode-<version>.dmg` file.
-4. Tell existing users to download that DMG, replace DockMode in **Applications**, and approve the launch again if macOS displays a security warning.
+2. Commit and push those changes to `main`.
+3. Create and push a semantic version tag, for example `v1.0.0`:
 
-Each release therefore needs a new DMG (or another archive containing the app), but it does not need to be submitted to the Mac App Store or signed with a paid Apple account. GitHub hosts the file; it does not sign the application on Apple’s behalf.
+   ```sh
+   git tag -a v1.0.0 -m "DockMode 1.0.0"
+   git push origin v1.0.0
+   ```
 
-The repository also contains `.github/workflows/release.yml` as an optional template for a future Developer ID/notarized pipeline. It is not required for the no-account workflow described above. The current supported update path is manual DMG replacement; the Sparkle updater remains optional and must not be presented as a silent, Gatekeeper-free update mechanism for unsigned builds.
+4. GitHub Actions runs the isolated checks, builds the arm64/x86_64 application, creates and verifies `DockMode-1.0.0.dmg`, computes its SHA-256 checksum, and publishes both files in a GitHub Release.
+
+Each release therefore needs a new DMG (or another archive containing the app), but it does not need to be submitted to the Mac App Store or signed with a paid Apple account. GitHub hosts the file; it does not sign the application on Apple’s behalf. Existing users download the new DMG, replace DockMode in **Applications**, and may need to approve the launch again if macOS displays a security warning.
+
+The current supported update path is manual DMG replacement. The Sparkle updater remains optional and must not be presented as a silent, Gatekeeper-free update mechanism for unsigned builds.
 
 ## Privacy
 
@@ -117,7 +123,7 @@ Profiles and Focus activation requests stay in the local App Group container. Do
 
 DockMode permet de créer plusieurs profils de Dock nommés et colorés. Chaque profil mémorise uniquement les applications épinglées, leur ordre et les séparateurs. Les dossiers, applications récentes et autres réglages restent intacts. Les applications ouvertes ne sont jamais lancées ni fermées lors d'un changement de profil.
 
-La distribution publique actuelle ne dépend pas d'un compte Apple Developer payant. Chaque version est publiée manuellement comme DMG dans une GitHub Release ; les utilisateurs remplacent l'application installée et peuvent devoir l'autoriser une première fois dans le Finder ou dans **Réglages Système → Confidentialité et sécurité**. Le dépôt conserve un workflow optionnel pour une future distribution signée, mais ce workflow n'est pas nécessaire pour publier les versions sans compte Apple.
+La distribution publique actuelle ne dépend pas d'un compte Apple Developer payant. Il suffit de pousser un tag `vX.Y.Z` : GitHub Actions compile l'application universelle, crée le DMG et publie automatiquement la GitHub Release. Les utilisateurs téléchargent ensuite le nouveau DMG, remplacent l'application installée et peuvent devoir l'autoriser une première fois dans le Finder ou dans **Réglages Système → Confidentialité et sécurité**. Les mises à jour intégrées silencieuses ne sont pas garanties pour les builds non signés.
 
 ## License
 
